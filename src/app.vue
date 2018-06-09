@@ -173,7 +173,6 @@
 					<a @click="exportTable('csv')" href="javascript:;"><img src="assets/images/a_ico2.png"><i>导出csv</i></a>
 					<a @click="exportTable('xls')" href="javascript:;"><img src="assets/images/a_ico2.png"><i>导出excel</i></a>
 					<a @click="exportTable('doc')" href="javascript:;"><img src="assets/images/a_ico2.png"><i>导出word</i></a>
-					<a href="#add" title=""><img src="assets/images/a_ico4.png"><i>新增记录</i></a>
 				</div>
 			</div>
 			<div class="clearfix"></div>
@@ -243,7 +242,7 @@
 							<td><button type="submit" class="btn btn-succes btn-success" @click="addFn()">添加</button></td>
 						</tr>
 						<tr v-for="(x,index) in list">
-							<td><input type="checkbox" name="checkbox"></td>
+							<td v-if="0"><input type="checkbox" name="checkbox"></td>
 							<td v-if="0">{{x.id}}</td>
 							<td>
 								<input type="text" v-model="x.company" class="input_box" />
@@ -681,7 +680,7 @@
 					if(DateArry.length == 1) {
 						that.$set(that.add, typename, year + '.' + month + '.' + automaticDate)
 					} else if(DateArry.length == 2) {
-						that.$set(that.add, typename, year + '.' + month + '.' + automaticDate)
+						that.$set(that.add, typename, year + '.' + automaticDate)
 					}
 				}
 			},

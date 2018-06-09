@@ -49,7 +49,7 @@
 		mounted: function() {
 			var that = this;
 			that.$http.get('api/').then(function(res) {
-				if(res.data.code == 1) {
+				if(res.data.code == 0) {
 					this.$router.push({
 						path: '/'
 					})
