@@ -225,7 +225,7 @@
 							<td><input type="text" v-model="add.smoney" class="input_box" /></td>
 							<td><input type="text" v-model="add.remarks" class="input_box" /></td>
 							<td>
-								<select class="form-control" v-model="add.designer">
+								<select class="form-control" v-model="add.designer" @keyup.ctrl.13="addFn">
 									<option v-for="w in designer" v-if="w.key!=undefined">{{w.name}}</option>
 								</select>
 							</td>
@@ -235,10 +235,10 @@
 								</select>
 							</td>
 							<td><input type="text" v-model="add.workload" class="input_box" /></td>
-							<td><input type="text" v-model="add.home" class="input_box" @blur="automatic('home')" @focus="today('home')" /></td>
+							<td><input type="text" v-model="add.home" class="input_box" @blur="automatic('home')" /></td>
 							<td><input type="text" v-model="add.program" class="input_box" /></td>
-							<td><input type="text" v-model="add.online" class="input_box" @focus="today('online')" /></td>
-							<td><button type="submit" class="btn btn-succes btn-success" @click="addFn()">添加</button></td>
+							<td><input type="text" v-model="add.online" class="input_box"/></td>
+							<td><button type="submit" class="btn btn-succes btn-success" @click="addFn">添加</button></td>
 						</tr>
 						<tr v-for="(x,index) in list">
 							<td v-if="0"><input type="checkbox" name="checkbox"></td>
@@ -834,7 +834,7 @@
 			});
 			$('.table').tablesort().data('tablesort');
 			$(".table").xlsTableFilter();
-			$('#app').on('click', '.menu-left-list li.button a', function() {
+			$('#app').on('click', '.menu-left-list li.button a', function(e) {
 				var dropDown = $(this).parent().next();
 				$('.dropdown').not(dropDown).slideUp('slow');
 				dropDown.slideToggle('slow');

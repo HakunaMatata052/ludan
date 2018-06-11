@@ -8,7 +8,7 @@
 					</li>
 
 					<li>
-						<input name="txtPassword" type="password" class="login-input" placeholder="管理员密码" title="管理员密码" v-model="login.txtPassword" />
+						<input name="txtPassword" type="password" class="login-input" placeholder="管理员密码" title="管理员密码" v-model="login.txtPassword"  @keyup.enter="submit"/>
 						<label class="icon pwd" for="txtPassword"></label>
 					</li>
 
