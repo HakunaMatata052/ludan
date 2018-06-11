@@ -70,10 +70,10 @@
 					<ul class="">
 						<li class="menu">
 							<ul>
-								<li class="button on">
+								<li class="button">
 									<a href="#" title="">各类型单量统计</a>
 								</li>
-								<li class="dropdown">
+								<li class="dropdown" style="display:none">
 									<ul>
 										<li><span>WJDH双模</span><b>{{wjdhsm}}</b></li>
 										<li><span>WJDH电商</span><b>{{wjdhds}}</b></li>
@@ -99,10 +99,10 @@
 						</li>
 						<li class="menu">
 							<ul>
-								<li class="button">
+								<li class="button on">
 									<a href="#" title="">技术下单统计</a>
 								</li>
-								<li class="dropdown" style="display:none">
+								<li class="dropdown">
 									<ul>
 										<li v-for="z in sjstj"><span>{{z.name}}</span><b>{{z.num}}</b></li>
 									</ul>
