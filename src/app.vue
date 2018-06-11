@@ -50,7 +50,7 @@
 									<a href="javascript:;">{{username}}</a>
 								</li>
 								<li>
-									<a href="javascript:;" @click="close_edit">个人设置</a>
+									<a href="javascript:;">个人设置</a>
 								</li>
 								<li>
 									<a href="javascript:;" @click="logout()">注销登录</a>
@@ -157,22 +157,21 @@
 					</div>
 					<div class="button_box">
 						<button type="submit" class="ant-btn ant-btn-primary FilterForm__search-btn___tSTMA" @click="searchFn()"><span>查 询</span></button>
-						<button type="reset" class="ant-btn" @click="reset"><span>清 空</span></button>
+						<button type="reset" class="ant-btn" @click="reSet"><span>清 空</span></button>
 					</div>
 				</div>
 			</transition>
 			<div class="toggle" @click="toggleShow = !toggleShow"></div>
 
 			<div class="cz_box">
-				<a href="#" title="" @click='toggle'><i>切换护眼模式</i></a>
-				<a href="#" title="" class="close_edit"><i>关闭编辑</i></a>
-				<a href="#" title="" class="open_edit"><i>打开编辑</i></a>
+				<a href="#" title="" @click='toggle'>切换护眼模式</a>
+				<a href="#" title="" @click="opcl_edit">{{stat_edit?"关闭编辑":"打开编辑"}}（关闭编辑后导出Excel效果最佳）</a>
 				<div class="cz_right">
-					<a @click="exportTable('json')" href="javascript:;"><img src="assets/images/a_ico2.png">导出json</a>
-					<a @click="exportTable('txt')" href="javascript:;"><img src="assets/images/a_ico2.png"><i>导出txt</i></a>
-					<a @click="exportTable('csv')" href="javascript:;"><img src="assets/images/a_ico2.png"><i>导出csv</i></a>
-					<a @click="exportTable('xls')" href="javascript:;"><img src="assets/images/a_ico2.png"><i>导出excel</i></a>
-					<a @click="exportTable('doc')" href="javascript:;"><img src="assets/images/a_ico2.png"><i>导出word</i></a>
+					<a @click="exportTable('json')" href="javascript:;"><img src="assets/images/a_ico2.png">导出Json</a>
+					<a @click="exportTable('txt')" href="javascript:;"><img src="assets/images/a_ico2.png"><i>导出Txt</i></a>
+					<a @click="exportTable('csv')" href="javascript:;"><img src="assets/images/a_ico2.png"><i>导出Csv</i></a>
+					<a @click="exportTable('xls')" href="javascript:;"><img src="assets/images/a_ico2.png"><i>导出Excel</i></a>
+					<a @click="exportTable('doc')" href="javascript:;"><img src="assets/images/a_ico2.png"><i>导出Word</i></a>
 				</div>
 			</div>
 			<div class="clearfix"></div>
@@ -200,11 +199,11 @@
 							<th width="4%">首页认可</th>
 							<th width="4%">程序认可</th>
 							<th width="4%">上线日期</th>
-							<th width="5%">操作</th>
+							<th width="5%" v-if="stat_edit">操作</th>
 						</tr>
 					</thead>
 					<tbody>
-						<tr>
+						<tr v-if="stat_edit">
 							<td v-if="0"><input type="checkbox" name="checkbox"></td>
 							<td v-if="0"></td>
 							<td>
@@ -244,42 +243,39 @@
 						<tr v-for="(x,index) in list">
 							<td v-if="0"><input type="checkbox" name="checkbox"></td>
 							<td v-if="0">{{x.id}}</td>
+							<td><input type="text" v-model="x.company" class="input_box" v-bind:disabled="stat_edit==0"/></td>
+							<td><input type="text" v-model="x.business" class="input_box"  v-bind:disabled="stat_edit==0"/></td>
+							<td><input type="text" v-model="x.manager" class="input_box"  v-bind:disabled="stat_edit==0"/></td>
+							<td><input type="text" v-model="x.customer" class="input_box"  v-bind:disabled="stat_edit==0"/></td>
+							<td><input type="text" v-model="x.domains" class="input_box"  v-bind:disabled="stat_edit==0"/></td>
+							<td><input type="text" v-model="x.qdate" class="input_box"  v-bind:disabled="stat_edit==0"/></td>
+							<td><input type="text" v-model="x.xdate" class="input_box"  v-bind:disabled="stat_edit==0"/></td>
 							<td>
-								<input type="text" v-model="x.company" class="input_box" />
-
-							</td>
-							<td><input type="text" v-model="x.business" class="input_box" /></td>
-							<td><input type="text" v-model="x.manager" class="input_box" /></td>
-							<td><input type="text" v-model="x.customer" class="input_box" /></td>
-							<td><input type="text" v-model="x.domains" class="input_box" /></td>
-							<td><input type="text" v-model="x.qdate" class="input_box" /></td>
-							<td><input type="text" v-model="x.xdate" class="input_box" /></td>
-							<td>
-								<select class="form-control" v-model="x.type">
+								<select class="form-control" v-model="x.type" v-bind:disabled="stat_edit==0">
 									<option v-for="z in typeList">{{z}}</option>
 								</select>
 							</td>
-							<td><input type="text" v-model="x.year" class="input_box" /></td>
-							<td><input type="text" v-model="x.qmoney" class="input_box" /></td>
-							<td><input type="text" v-model="x.smoney" class="input_box" /></td>
-							<td><input type="text" v-model="x.remarks" class="input_box" /></td>
+							<td><input type="text" v-model="x.year" class="input_box"  v-bind:disabled="stat_edit==0"/></td>
+							<td><input type="text" v-model="x.qmoney" class="input_box"  v-bind:disabled="stat_edit==0"/></td>
+							<td><input type="text" v-model="x.smoney" class="input_box"  v-bind:disabled="stat_edit==0"/></td>
+							<td><input type="text" v-model="x.remarks" class="input_box"  v-bind:disabled="stat_edit==0"/></td>
 							<td>
-								<input type="text" v-model="x.designer" class="input_box" />
+								<input type="text" v-model="x.designer" class="input_box"  v-bind:disabled="stat_edit==0"/>
 							</td>
 							<td>
-								<select class="form-control" v-model="x.programmer">
+								<select class="form-control" v-model="x.programmer" v-bind:disabled="stat_edit==0">
 									<option v-for="v in programmer" v-bind:disabled="v.key==undefined">{{v.name}}</option>
 								</select>
 							</td>
-							<td><input type="text" v-model="x.workload" class="input_box" /></td>
-							<td><input type="text" v-model="x.home" class="input_box" @focus="today('home',index)" /></td>
-							<td><input type="text" v-model="x.program" class="input_box" /></td>
-							<td><input type="text" v-model="x.online" class="input_box" @focus="today('online',index)" /></td>
-							<td><button type="submit" class="btn btn-default btn-submit" @click="editFn(index)">修改</button><button class="btn btn-default btn-delete" @click="deleteFn(index)">删除</button></td>
+							<td><input type="text" v-model="x.workload" class="input_box"  v-bind:disabled="stat_edit==0"/></td>
+							<td><input type="text" v-model="x.home" class="input_box" @focus="today('home',index)"  v-bind:disabled="stat_edit==0"/></td>
+							<td><input type="text" v-model="x.program" class="input_box"  v-bind:disabled="stat_edit==0"/></td>
+							<td><input type="text" v-model="x.online" class="input_box" @focus="today('online',index)"  v-bind:disabled="stat_edit==0"/></td>
+							<td v-if="stat_edit"><button type="submit" class="btn btn-default btn-submit" @click="editFn(index)">修改</button><button class="btn btn-default btn-delete" @click="deleteFn(index)">删除</button></td>
 						</tr>
 					</tbody>
 				</table>
-				<button type="button" class="ant-btn ant-btn-primary FilterForm__search-btn___tSTMA" id="add" @click="close_edit"><span>批量提交</span></button>
+				<button type="button" class="ant-btn ant-btn-primary" v-if="0"><span>批量提交</span></button>
 			</div>
 		</div>
 	</div>
@@ -502,7 +498,8 @@
 				cxDate: {},
 				login: 0,
 				isA: 0,
-				toggleShow: 1
+				toggleShow: 1,
+				stat_edit:1
 			}
 		},
 		watch: {
@@ -557,7 +554,7 @@
 				}
 
 			},
-			reset: function() {
+			reSet: function() {
 				var that = this;
 				that.search = {};
 			},
@@ -766,11 +763,9 @@
 				var that = this;
 				that.isShow = 0;
 			},
-			close_edit: function() {
-				layer.msg('功能尚未实装！！');
-			},
-			open_edit: function() {
-				layer.msg('功能尚未实装！！');
+			opcl_edit: function() {
+				var that = this;
+				that.stat_edit = !that.stat_edit;
 			},
 			exportTable: function(type) {
 				var that = this;
@@ -853,13 +848,6 @@
 			$('#app').on('mouseover', 'td', function() {
 				this.title = $(this).find('input').val() || this.innerText;
 			});
-			$('#app').on('click', '.close_edit', function() {
-				$('.table').find('input,select,button').prop('disabled', true)
-			});
-
-			$('#app').on('click', '.open_edit', function() {
-				$('.table').find('input,select,button').prop('disabled', false)
-			})
 
 		},
 		created() {}
