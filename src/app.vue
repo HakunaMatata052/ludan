@@ -176,7 +176,7 @@
 			</div>
 			<div class="clearfix"></div>
 			<div class="big_box">
-				<table class="table table-bordered table-hover" id="table" v-bind:class='{ "huyan" : isA}'>
+				<table class="table table-bordered table-hover" id="table" v-bind:class='isA=="open"?"huyan":""'>
 					<thead>
 						<tr>
 							<th width="3%" v-if="0"><input type="checkbox" name="checkbox"></th>
@@ -497,7 +497,7 @@
 				isShow: 0,
 				cxDate: {},
 				login: 0,
-				isA: 0,
+				isA: 'close',
 				togglebody: 'open',
 				toggleShow: 1,
 				stat_edit: 'open'
@@ -771,7 +771,7 @@
 				} else {
 					that.stat_edit = "open"
 				}
-				that.$cookie.set('stat_edit', that.stat_edit, 1);
+				//that.$cookie.set('stat_edit', that.stat_edit, 1);
 			},
 			exportTable: function(type) {
 				var that = this;
@@ -808,7 +808,7 @@
 				} else {
 					that.togglebody = "open"
 				}
-				that.$cookie.set('togglebody', that.togglebody, 1);
+				//that.$cookie.set('togglebody', that.togglebody, 1);
 
 			},
 			setting(){
@@ -824,6 +824,9 @@
 			}
 			if(that.$cookie.get('togglebody') != undefined) {
 				that.togglebody = that.$cookie.get('togglebody');
+			}
+			if(that.$cookie.get('isA') != undefined) {
+				that.isA = that.$cookie.get('isA');
 			}
 			that.$http.get(that.get).then(function(res) {
 				if(res.data.code == 0) {

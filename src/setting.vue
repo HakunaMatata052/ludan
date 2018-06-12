@@ -3,10 +3,30 @@
 		<div class="form-group">
 			<label for="name">全屏模式</label>
 			<label class="radio-inline">
-				<input type="radio" name="optionsRadiosinline" value="1" v-model="quanping"> 是
+				<input type="radio" name="quanping" value="open" v-model="quanping"> 是
 			</label>
 			<label class="radio-inline">
-				<input type="radio" name="optionsRadiosinline" value="0" v-model="quanping"> 否
+				<input type="radio" name="quanping" value="close" v-model="quanping"> 否
+			</label>
+		</div>
+
+		<div class="form-group">
+			<label for="name">是否关闭编辑</label>
+			<label class="radio-inline">
+				<input type="radio" name="stat_edit" value="close" v-model="stat_edit"> 是
+			</label>
+			<label class="radio-inline">
+				<input type="radio" name="stat_edit" value="open" v-model="stat_edit"> 否
+			</label>
+		</div>
+		
+		<div class="form-group">
+			<label for="name">是否开启护眼模式</label>
+			<label class="radio-inline">
+				<input type="radio" name="huyan" value="open" v-model="isA"> 是
+			</label>
+			<label class="radio-inline">
+				<input type="radio" name="huyan" value="close" v-model="isA"> 否
 			</label>
 		</div>
 
@@ -17,31 +37,27 @@
 	export default {
 		data() {
 			return {
-				quanping:'1'
+				quanping:'close',
+				stat_edit:'open',
+				isA:'close'
 			}
 		},
 		methods:{
 			submit(){
 				var that = this;
-				if(that.quanping==1){
-					var togglebody = 'close'
-				}else{
-					var togglebody = 'open'
-				}
-				that.$cookie.set('togglebody',togglebody,1);
-				this.$router.push({
+				that.$cookie.set('togglebody',that.quanping,1);				
+				that.$cookie.set('stat_edit',that.stat_edit,1);							
+				that.$cookie.set('isA',that.isA,1);
+				that.$router.push({
 						path: '/'
 				})
 			}
 		},
 		mounted(){
 			var that = this;
-			var dqzt = that.$cookie.get('togglebody');
-			if(dqzt=='open'){
-				that.quanping = '0'
-			}else{
-				that.quanping = '1'
-			}
+			that.quanping = that.$cookie.get('togglebody');
+			that.stat_edit = that.$cookie.get('stat_edit');	
+			that.isA = that.$cookie.get('isA');
 		}
 	}
 </script>
