@@ -1,7 +1,7 @@
 <template>
-	<div id=app v-show="login">
+	<div id=app v-show="login" v-bind:class='togglebody=="open"?"":"shrink"'>
 		<div class="menu-top">
-			<a class="btn-paograms"></a>
+			<a class="btn-paograms" @click="toggleApp"></a>
 			<div class="nav-top hidden-md hidden-sm">
 				<div class="navofhd">
 					<ul id="nav" class="hidden-xs">
@@ -50,10 +50,10 @@
 									<a href="javascript:;">{{username}}</a>
 								</li>
 								<li>
-									<a href="javascript:;">个人设置</a>
+									<a href="javascript:;" @click="setting">个人设置</a>
 								</li>
 								<li>
-									<a href="javascript:;" @click="logout()">注销登录</a>
+									<a href="javascript:;" @click="logout">注销登录</a>
 								</li>
 							</ul>
 						</div>
@@ -237,40 +237,40 @@
 							<td><input type="text" v-model="add.workload" class="input_box" /></td>
 							<td><input type="text" v-model="add.home" class="input_box" @blur="automatic('home')" /></td>
 							<td><input type="text" v-model="add.program" class="input_box" /></td>
-							<td><input type="text" v-model="add.online" class="input_box"/></td>
+							<td><input type="text" v-model="add.online" class="input_box" /></td>
 							<td><button type="submit" class="btn btn-succes btn-success" @click="addFn">添加</button></td>
 						</tr>
 						<tr v-for="(x,index) in list">
 							<td v-if="0"><input type="checkbox" name="checkbox"></td>
 							<td v-if="0">{{x.id}}</td>
-							<td><input type="text" v-model="x.company" class="input_box" v-bind:disabled="stat_edit=='close'"/></td>
-							<td><input type="text" v-model="x.business" class="input_box"  v-bind:disabled="stat_edit=='close'"/></td>
-							<td><input type="text" v-model="x.manager" class="input_box"  v-bind:disabled="stat_edit=='close'"/></td>
-							<td><input type="text" v-model="x.customer" class="input_box"  v-bind:disabled="stat_edit=='close'"/></td>
-							<td><input type="text" v-model="x.domains" class="input_box"  v-bind:disabled="stat_edit=='close'"/></td>
-							<td><input type="text" v-model="x.qdate" class="input_box"  v-bind:disabled="stat_edit=='close'"/></td>
-							<td><input type="text" v-model="x.xdate" class="input_box"  v-bind:disabled="stat_edit=='close'"/></td>
+							<td><input type="text" v-model="x.company" class="input_box" v-bind:disabled="stat_edit=='close'" /></td>
+							<td><input type="text" v-model="x.business" class="input_box" v-bind:disabled="stat_edit=='close'" /></td>
+							<td><input type="text" v-model="x.manager" class="input_box" v-bind:disabled="stat_edit=='close'" /></td>
+							<td><input type="text" v-model="x.customer" class="input_box" v-bind:disabled="stat_edit=='close'" /></td>
+							<td><input type="text" v-model="x.domains" class="input_box" v-bind:disabled="stat_edit=='close'" /></td>
+							<td><input type="text" v-model="x.qdate" class="input_box" v-bind:disabled="stat_edit=='close'" /></td>
+							<td><input type="text" v-model="x.xdate" class="input_box" v-bind:disabled="stat_edit=='close'" /></td>
 							<td>
 								<select class="form-control" v-model="x.type" v-bind:disabled="stat_edit=='close'">
 									<option v-for="z in typeList">{{z}}</option>
 								</select>
 							</td>
-							<td><input type="text" v-model="x.year" class="input_box"  v-bind:disabled="stat_edit=='close'"/></td>
-							<td><input type="text" v-model="x.qmoney" class="input_box"  v-bind:disabled="stat_edit=='close'"/></td>
-							<td><input type="text" v-model="x.smoney" class="input_box"  v-bind:disabled="stat_edit=='close'"/></td>
-							<td><input type="text" v-model="x.remarks" class="input_box"  v-bind:disabled="stat_edit=='close'"/></td>
+							<td><input type="text" v-model="x.year" class="input_box" v-bind:disabled="stat_edit=='close'" /></td>
+							<td><input type="text" v-model="x.qmoney" class="input_box" v-bind:disabled="stat_edit=='close'" /></td>
+							<td><input type="text" v-model="x.smoney" class="input_box" v-bind:disabled="stat_edit=='close'" /></td>
+							<td><input type="text" v-model="x.remarks" class="input_box" v-bind:disabled="stat_edit=='close'" /></td>
 							<td>
-								<input type="text" v-model="x.designer" class="input_box"  v-bind:disabled="stat_edit=='close'"/>
+								<input type="text" v-model="x.designer" class="input_box" v-bind:disabled="stat_edit=='close'" />
 							</td>
 							<td>
 								<select class="form-control" v-model="x.programmer" v-bind:disabled="stat_edit=='close'">
 									<option v-for="v in programmer" v-bind:disabled="v.key==undefined">{{v.name}}</option>
 								</select>
 							</td>
-							<td><input type="text" v-model="x.workload" class="input_box"  v-bind:disabled="stat_edit=='close'"/></td>
-							<td><input type="text" v-model="x.home" class="input_box" @focus="today('home',index)"  v-bind:disabled="stat_edit=='close'"/></td>
-							<td><input type="text" v-model="x.program" class="input_box"  v-bind:disabled="stat_edit=='close'"/></td>
-							<td><input type="text" v-model="x.online" class="input_box" @focus="today('online',index)"  v-bind:disabled="stat_edit=='close'"/></td>
+							<td><input type="text" v-model="x.workload" class="input_box" v-bind:disabled="stat_edit=='close'" /></td>
+							<td><input type="text" v-model="x.home" class="input_box" @focus="today('home',index)" v-bind:disabled="stat_edit=='close'" /></td>
+							<td><input type="text" v-model="x.program" class="input_box" v-bind:disabled="stat_edit=='close'" /></td>
+							<td><input type="text" v-model="x.online" class="input_box" @focus="today('online',index)" v-bind:disabled="stat_edit=='close'" /></td>
 							<td v-if="stat_edit=='open'"><button type="submit" class="btn btn-default btn-submit" @click="editFn(index)">修改</button><button class="btn btn-default btn-delete" @click="deleteFn(index)">删除</button></td>
 						</tr>
 					</tbody>
@@ -498,8 +498,9 @@
 				cxDate: {},
 				login: 0,
 				isA: 0,
+				togglebody: 'open',
 				toggleShow: 1,
-				stat_edit:true
+				stat_edit: 'open'
 			}
 		},
 		watch: {
@@ -765,9 +766,9 @@
 			},
 			opcl_edit: function() {
 				var that = this;
-				if(that.stat_edit=="open"){
+				if(that.stat_edit == "open") {
 					that.stat_edit = "close"
-				}else{
+				} else {
 					that.stat_edit = "open"
 				}
 				that.$cookie.set('stat_edit', that.stat_edit, 1);
@@ -799,12 +800,31 @@
 				} else {
 					that.isA = 0
 				}
+			},
+			toggleApp() {
+				var that = this;
+				if(that.togglebody == "open") {
+					that.togglebody = "close"
+				} else {
+					that.togglebody = "open"
+				}
+				that.$cookie.set('togglebody', that.togglebody, 1);
+
+			},
+			setting(){
+				this.$router.push({
+						path: '/setting'
+					})
 			}
 		},
 		mounted: function() {
 			var that = this;
-			var cookie_stat_edit = 	that.$cookie.get('stat_edit');
-			that.stat_edit=cookie_stat_edit
+			if(that.$cookie.get('stat_edit') != undefined) {
+				that.stat_edit = that.$cookie.get('stat_edit');
+			}
+			if(that.$cookie.get('togglebody') != undefined) {
+				that.togglebody = that.$cookie.get('togglebody');
+			}
 			that.$http.get(that.get).then(function(res) {
 				if(res.data.code == 0) {
 					that.login = 1;
@@ -848,9 +868,6 @@
 				$('#main').find('.on').removeClass('on')
 				dropDown.prev().addClass('on')
 				e.preventDefault();
-			});
-			$('#app').on('click', '.btn-paograms', function() {
-				$('.indexbody').toggleClass('shrink');
 			});
 			$('#app').on('mouseover', 'td', function() {
 				this.title = $(this).find('input').val() || this.innerText;
