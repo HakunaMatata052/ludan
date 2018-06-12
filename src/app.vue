@@ -165,9 +165,9 @@
 
 			<div class="cz_box">
 				<a href="#" title="" @click='toggle'>切换护眼模式</a>
-				<a href="#" title="" @click="opcl_edit">{{stat_edit?"关闭编辑":"打开编辑"}}（关闭编辑后导出Excel效果最佳）</a>
+				<a href="#" title="" @click="opcl_edit">{{stat_edit=="open"?"关闭编辑":"打开编辑"}}（关闭编辑后导出Excel效果最佳）</a>
 				<div class="cz_right">
-					<a @click="exportTable('json')" href="javascript:;"><img src="assets/images/a_ico2.png">导出Json</a>
+					<a @click="exportTable('json')" href="javascript:;"><img src="/assets/images/a_ico2.png">导出Json</a>
 					<a @click="exportTable('txt')" href="javascript:;"><img src="assets/images/a_ico2.png"><i>导出Txt</i></a>
 					<a @click="exportTable('csv')" href="javascript:;"><img src="assets/images/a_ico2.png"><i>导出Csv</i></a>
 					<a @click="exportTable('xls')" href="javascript:;"><img src="assets/images/a_ico2.png"><i>导出Excel</i></a>
@@ -199,11 +199,11 @@
 							<th width="4%">首页认可</th>
 							<th width="4%">程序认可</th>
 							<th width="4%">上线日期</th>
-							<th width="5%" v-if="stat_edit">操作</th>
+							<th width="5%" v-if="stat_edit=='open'">操作</th>
 						</tr>
 					</thead>
 					<tbody>
-						<tr v-if="stat_edit">
+						<tr v-if="stat_edit=='open'">
 							<td v-if="0"><input type="checkbox" name="checkbox"></td>
 							<td v-if="0"></td>
 							<td>
@@ -243,35 +243,35 @@
 						<tr v-for="(x,index) in list">
 							<td v-if="0"><input type="checkbox" name="checkbox"></td>
 							<td v-if="0">{{x.id}}</td>
-							<td><input type="text" v-model="x.company" class="input_box" v-bind:disabled="stat_edit==0"/></td>
-							<td><input type="text" v-model="x.business" class="input_box"  v-bind:disabled="stat_edit==0"/></td>
-							<td><input type="text" v-model="x.manager" class="input_box"  v-bind:disabled="stat_edit==0"/></td>
-							<td><input type="text" v-model="x.customer" class="input_box"  v-bind:disabled="stat_edit==0"/></td>
-							<td><input type="text" v-model="x.domains" class="input_box"  v-bind:disabled="stat_edit==0"/></td>
-							<td><input type="text" v-model="x.qdate" class="input_box"  v-bind:disabled="stat_edit==0"/></td>
-							<td><input type="text" v-model="x.xdate" class="input_box"  v-bind:disabled="stat_edit==0"/></td>
+							<td><input type="text" v-model="x.company" class="input_box" v-bind:disabled="stat_edit=='close'"/></td>
+							<td><input type="text" v-model="x.business" class="input_box"  v-bind:disabled="stat_edit=='close'"/></td>
+							<td><input type="text" v-model="x.manager" class="input_box"  v-bind:disabled="stat_edit=='close'"/></td>
+							<td><input type="text" v-model="x.customer" class="input_box"  v-bind:disabled="stat_edit=='close'"/></td>
+							<td><input type="text" v-model="x.domains" class="input_box"  v-bind:disabled="stat_edit=='close'"/></td>
+							<td><input type="text" v-model="x.qdate" class="input_box"  v-bind:disabled="stat_edit=='close'"/></td>
+							<td><input type="text" v-model="x.xdate" class="input_box"  v-bind:disabled="stat_edit=='close'"/></td>
 							<td>
-								<select class="form-control" v-model="x.type" v-bind:disabled="stat_edit==0">
+								<select class="form-control" v-model="x.type" v-bind:disabled="stat_edit=='close'">
 									<option v-for="z in typeList">{{z}}</option>
 								</select>
 							</td>
-							<td><input type="text" v-model="x.year" class="input_box"  v-bind:disabled="stat_edit==0"/></td>
-							<td><input type="text" v-model="x.qmoney" class="input_box"  v-bind:disabled="stat_edit==0"/></td>
-							<td><input type="text" v-model="x.smoney" class="input_box"  v-bind:disabled="stat_edit==0"/></td>
-							<td><input type="text" v-model="x.remarks" class="input_box"  v-bind:disabled="stat_edit==0"/></td>
+							<td><input type="text" v-model="x.year" class="input_box"  v-bind:disabled="stat_edit=='close'"/></td>
+							<td><input type="text" v-model="x.qmoney" class="input_box"  v-bind:disabled="stat_edit=='close'"/></td>
+							<td><input type="text" v-model="x.smoney" class="input_box"  v-bind:disabled="stat_edit=='close'"/></td>
+							<td><input type="text" v-model="x.remarks" class="input_box"  v-bind:disabled="stat_edit=='close'"/></td>
 							<td>
-								<input type="text" v-model="x.designer" class="input_box"  v-bind:disabled="stat_edit==0"/>
+								<input type="text" v-model="x.designer" class="input_box"  v-bind:disabled="stat_edit=='close'"/>
 							</td>
 							<td>
-								<select class="form-control" v-model="x.programmer" v-bind:disabled="stat_edit==0">
+								<select class="form-control" v-model="x.programmer" v-bind:disabled="stat_edit=='close'">
 									<option v-for="v in programmer" v-bind:disabled="v.key==undefined">{{v.name}}</option>
 								</select>
 							</td>
-							<td><input type="text" v-model="x.workload" class="input_box"  v-bind:disabled="stat_edit==0"/></td>
-							<td><input type="text" v-model="x.home" class="input_box" @focus="today('home',index)"  v-bind:disabled="stat_edit==0"/></td>
-							<td><input type="text" v-model="x.program" class="input_box"  v-bind:disabled="stat_edit==0"/></td>
-							<td><input type="text" v-model="x.online" class="input_box" @focus="today('online',index)"  v-bind:disabled="stat_edit==0"/></td>
-							<td v-if="stat_edit"><button type="submit" class="btn btn-default btn-submit" @click="editFn(index)">修改</button><button class="btn btn-default btn-delete" @click="deleteFn(index)">删除</button></td>
+							<td><input type="text" v-model="x.workload" class="input_box"  v-bind:disabled="stat_edit=='close'"/></td>
+							<td><input type="text" v-model="x.home" class="input_box" @focus="today('home',index)"  v-bind:disabled="stat_edit=='close'"/></td>
+							<td><input type="text" v-model="x.program" class="input_box"  v-bind:disabled="stat_edit=='close'"/></td>
+							<td><input type="text" v-model="x.online" class="input_box" @focus="today('online',index)"  v-bind:disabled="stat_edit=='close'"/></td>
+							<td v-if="stat_edit=='open'"><button type="submit" class="btn btn-default btn-submit" @click="editFn(index)">修改</button><button class="btn btn-default btn-delete" @click="deleteFn(index)">删除</button></td>
 						</tr>
 					</tbody>
 				</table>
@@ -499,7 +499,7 @@
 				login: 0,
 				isA: 0,
 				toggleShow: 1,
-				stat_edit:1
+				stat_edit:true
 			}
 		},
 		watch: {
@@ -765,7 +765,12 @@
 			},
 			opcl_edit: function() {
 				var that = this;
-				that.stat_edit = !that.stat_edit;
+				if(that.stat_edit=="open"){
+					that.stat_edit = "close"
+				}else{
+					that.stat_edit = "open"
+				}
+				that.$cookie.set('stat_edit', that.stat_edit, 1);
 			},
 			exportTable: function(type) {
 				var that = this;
@@ -798,6 +803,8 @@
 		},
 		mounted: function() {
 			var that = this;
+			var cookie_stat_edit = 	that.$cookie.get('stat_edit');
+			that.stat_edit=cookie_stat_edit
 			that.$http.get(that.get).then(function(res) {
 				if(res.data.code == 0) {
 					that.login = 1;
