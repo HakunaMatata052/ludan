@@ -1,5 +1,5 @@
 <template>
-	<div id=app v-show="login" v-bind:class='togglebody=="open"?"":"shrink"'>
+	<div id=app v-show="login" v-bind:class='togglebody=="open"?"shrink":""'>
 		<div class="menu-top">
 			<a class="btn-paograms" @click="toggleApp"></a>
 			<div class="nav-top hidden-md hidden-sm">
@@ -795,10 +795,10 @@
 			},
 			toggle() {
 				var that = this;
-				if(that.isA == 0) {
-					that.isA = 1
+				if(that.isA == 'open') {
+					that.isA = 'close'
 				} else {
-					that.isA = 0
+					that.isA = 'open'
 				}
 			},
 			toggleApp() {
