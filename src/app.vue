@@ -1,5 +1,5 @@
 <template>
-	<div id=app v-show="login" v-bind:class='togglebody=="open"?"shrink":""'>
+	<div id="app" v-show="login" v-bind:class='togglebody=="open"?"shrink":""'>
 		<div class="menu-top">
 			<a class="btn-paograms" @click="toggleApp"></a>
 			<div class="nav-top hidden-md hidden-sm">
