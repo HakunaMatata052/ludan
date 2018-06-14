@@ -45,9 +45,9 @@
 		methods:{
 			submit(){
 				var that = this;
-				that.$cookie.set('togglebody',that.quanping,1);				
-				that.$cookie.set('stat_edit',that.stat_edit,1);							
-				that.$cookie.set('isA',that.isA,1);
+				that.$cookie.set('togglebody',that.quanping,'Tue, 19 Jan 2038 03:14:07 GMT');				
+				that.$cookie.set('stat_edit',that.stat_edit,'Tue, 19 Jan 2038 03:14:07 GMT');							
+				that.$cookie.set('isA',that.isA,'Tue, 19 Jan 2038 03:14:07 GMT');
 				that.$router.push({
 						path: '/'
 				})
