@@ -277,6 +277,8 @@
 				</table>
 				<button type="button" class="ant-btn ant-btn-primary" v-if="0"><span>批量提交</span></button>
 			</div>
+			<textarea v-model="dailishang" rows="5" style="border: 1px solid;width: 100%;"></textarea>
+			<button type="button" class="ant-btn ant-btn-primary" @click="dls"><span>提交</span></button>
 		</div>
 	</div>
 </template>
@@ -302,6 +304,7 @@
 				fgstj: [],
 				sjstj: [],
 				search: {},
+				dailishang:'',
 				add: {
 					'type': 'WJDH双模'
 				},
@@ -815,6 +818,34 @@
 				this.$router.push({
 						path: '/setting'
 					})
+			},
+			dls(){
+				var that = this;
+				var str = this.dailishang.split(/[\r\n]/g);
+				var addjson = {'company':'代理商'};
+				for(var i=0;i<str.length;i++){
+					var item = str[i].split(':');
+					
+					if(item[0]=="代理商"){
+						addjson.remarks = item[1];
+					}else if(item[0]=="公司名称"){
+						addjson.business = item[1];
+					}else if(item[0]=="域名"){
+						var yuming = item[1].replace('[图片]','')
+						addjson.domains = yuming;
+					}else if(item[0]=="类型"){
+						addjson.type = item[1];
+					}else if(item[0]=="下单日期"){
+						addjson.xdate = item[1];
+					}else if(item[0]=="客服"){
+						addjson.business = item[1];
+					}else if(item[0]=="备注"){
+						var dqremarks = addjson.remarks;
+						addjson.remarks = dqremarks+'/'+item[1];
+					}
+				};
+				that.add = addjson;
+				
 			}
 		},
 		mounted: function() {
