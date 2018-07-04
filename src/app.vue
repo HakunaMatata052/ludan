@@ -825,13 +825,12 @@
 				var addjson = {'company':'代理商'};
 				for(var i=0;i<str.length;i++){
 					var item = str[i].split(':');
-					
 					if(item[0]=="代理商"){
 						addjson.remarks = item[1];
 					}else if(item[0]=="公司名称"){
-						addjson.business = item[1];
+						addjson.customer = item[1];
 					}else if(item[0]=="域名"){
-						var yuming = item[1].replace('[图片]','')
+						var yuming = item[1].replace(/\[图片\]/gi,'')
 						addjson.domains = yuming;
 					}else if(item[0]=="类型"){
 						addjson.type = item[1];
@@ -841,7 +840,7 @@
 						addjson.business = item[1];
 					}else if(item[0]=="备注"){
 						var dqremarks = addjson.remarks;
-						addjson.remarks = dqremarks+'/'+item[1];
+						addjson.remarks = dqremarks+'/'+(item[1].replace(/\[图片\]/gi,''));
 					}
 				};
 				that.add = addjson;
@@ -860,7 +859,7 @@
 				that.isA = that.$cookie.get('isA');
 			}
 			that.$http.get(that.get).then(function(res) {
-				if(res.data.code == 0) {
+				if(res.data.code == 0||res.data.code == 3) {
 					that.login = 1;
 					that.list = res.data.data;
 					if(res.data.data.length == 0) {
