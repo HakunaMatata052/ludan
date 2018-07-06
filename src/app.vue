@@ -1,6 +1,6 @@
 <template>
 	<div id="app" v-show="login">
-		<el-container  style="height: 100%;">
+		<el-container style="height: 100%;">
 			<el-aside width="200px" style="background-color: rgb(238, 241, 246)" v-show="togglebody">
 				<el-menu :default-openeds="['1']">
 					<el-submenu index="1">
@@ -247,7 +247,7 @@
 							</template>
 						</el-table-column>
 					</el-table>
-					<el-table :data="list" stripe border style="width: 100%;" v-bind:class='isA=="open"?"huyan":""'>
+					<el-table :data="list" stripe border style="width: 100%;" v-bind:class='isA=="open"?"huyan":""' v-loading="loading">
 						<el-table-column sortable prop="company" label="分公司" min-width="60">
 							<template slot-scope="scope">
 								<el-input v-model="scope.row.company" v-bind:disabled="stat_edit=='close'"></el-input>
@@ -316,18 +316,18 @@
 								</el-popover>
 							</template>
 						</el-table-column>
-						<el-table-column sortable prop="designer" label="设计师" min-width="75" :filters="designer" :filter-method="filterDesigner">
+						<el-table-column sortable prop="designer" label="设计师" min-width="75" :filters="designer" :filter-method="filter">
 							<template slot-scope="scope">
 								<el-select v-model="scope.row.designer" placeholder="请选择" v-bind:disabled="stat_edit=='close'">
-									<el-option v-for="item in designer" :key="item.value" :label="item.label" :value="item.value">
+									<el-option v-for="item in designer" :key="item.value" :label="item.value" :value="item.value">
 									</el-option>
 								</el-select>
 							</template>
 						</el-table-column>
-						<el-table-column sortable prop="programmer" label="程序" min-width="75" :filters="programmer" :filter-method="filterDesigner">
+						<el-table-column sortable prop="programmer" label="程序" min-width="75" :filters="programmer" :filter-method="filter">
 							<template slot-scope="scope">
 								<el-select v-model="scope.row.programmer" placeholder="请选择" v-bind:disabled="stat_edit=='close'">
-									<el-option v-for="item in programmer" :key="item.value" :label="item.label" :value="item.value">
+									<el-option v-for="item in programmer" :key="item.value" :label="item.value" :value="item.value">
 									</el-option>
 								</el-select>
 							</template>
@@ -339,7 +339,7 @@
 						</el-table-column>
 						<el-table-column sortable prop="home" label="首页认可" min-width="70">
 							<template slot-scope="scope">
-								<el-input v-model="scope.row.home" @focus="today('home',scope.$index)" v-bind:disabled="stat_edit=='close'"></el-input>
+								<el-input v-model="scope.row.home" @focus="today('home',scope.row)" v-bind:disabled="stat_edit=='close'"></el-input>
 							</template>
 						</el-table-column>
 						<el-table-column sortable prop="program" label="程序认可" min-width="70">
@@ -349,13 +349,13 @@
 						</el-table-column>
 						<el-table-column sortable prop="online" label="上线日期" min-width="70">
 							<template slot-scope="scope">
-								<el-input v-model="scope.row.online" @focus="today('online',scope.$index)" v-bind:disabled="stat_edit=='close'"></el-input>
+								<el-input v-model="scope.row.online" @focus="today('online',scope.row)" v-bind:disabled="stat_edit=='close'"></el-input>
 							</template>
 						</el-table-column>
 						<el-table-column sortable label="操作" width="140" fixed="right" v-if="stat_edit=='open'">
 							<template slot-scope="scope">
-								<el-button size="mini" type="primary" @click="editFn(scope.$index)">编辑</el-button>
-								<el-button size="mini" type="danger" @click="deleteFn(scope.$index)">删除</el-button>
+								<el-button size="mini" type="primary" @click="editFn(scope.row)">编辑</el-button>
+								<el-button size="mini" type="danger" @click="deleteFn(scope.row)">删除</el-button>
 							</template>
 						</el-table-column>
 					</el-table>
@@ -614,7 +614,8 @@
 				isA: 'close',
 				togglebody: 1,
 				toggleShow: 1,
-				stat_edit: 'open'
+				stat_edit: 'open',
+				loading: false
 			}
 		},
 		watch: {
@@ -630,7 +631,7 @@
 
 				var that = this;
 				that.$prompt('快捷输入', '提示', {
-					inputType:'textarea'
+					inputType: 'textarea'
 				}).then(({
 					value
 				}) => {
@@ -659,7 +660,7 @@
 							addjson.remarks = dqremarks + '/' + (item[1].replace(/\[图片\]/gi, ''));
 						}
 					};
-					that.$set(that.add, 0,addjson)
+					that.$set(that.add, 0, addjson)
 				}).catch(() => {
 					that.$message({
 						type: 'info',
@@ -668,7 +669,7 @@
 				});
 
 			},
-			filterDesigner(value, row, column) {
+			filter(value, row, column) {
 				const property = column['property'];
 				return row[property] === value;
 			},
@@ -695,6 +696,7 @@
 			},
 			showData: function(year, month) {
 				var that = this;
+				that.loading = true;
 				if(year == undefined) {
 					var getUrl = that.get;
 				} else {
@@ -704,7 +706,8 @@
 					if(res.data.code == 0) {
 						that.list = res.data.data;
 						that.temlist = res.data.data;
-						that.tongji()
+						that.tongji();
+						that.loading = false;
 					} else {
 						that.$message({
 							type: 'error',
@@ -720,13 +723,16 @@
 			},
 			searchFn: function() {
 				var that = this;
+				
+				that.loading = true;
 				var searchJson = that.search;
 				if(JSON.stringify(searchJson) != "{}") {
 					console.log(searchJson)
 					that.$http.post(that.get + 'action=search', searchJson).then(function(res) {
 						if(res.data.code == 0) {
 							that.list = res.data.data;
-							that.tongji()
+							that.tongji();
+							that.loading = false;
 						} else {
 							that.$message({
 								type: 'error',
@@ -773,7 +779,7 @@
 								type: 'success',
 								message: '添加成功!'
 							});
-							that.$set(that.add, 0,'')
+							that.$set(that.add, 0, '')
 						}, function(res) {
 							that.$message({
 								type: 'error',
@@ -795,10 +801,9 @@
 				}
 
 			},
-			editFn: function(index) {
+			editFn: function(row) {
 				var that = this;
-				var editJosn = that.list[index];
-				console.log(editJosn)
+				var editJosn = row;
 				that.$confirm('确认修改？？', '提示', {
 					confirmButtonText: '确定',
 					cancelButtonText: '取消',
@@ -825,10 +830,10 @@
 					});
 				});
 			},
-			deleteFn: function(index) {
+			deleteFn: function(row) {
 				var that = this;
 				var deleteJosn = {};
-				deleteJosn.id = that.list[index].id;
+				deleteJosn.id = row.id;
 				that.$confirm('确认删除？？', '提示', {
 					confirmButtonText: '确定',
 					cancelButtonText: '取消',
@@ -855,33 +860,16 @@
 					});
 				});
 			},
-			today: function(typename, index) {
+			today: function(typename, row) {
 				var that = this;
-				if(index != undefined) {
-					var stri = that.list[index][typename];
-					if(stri == undefined || stri.length == '') {
-						var Today = new Date()
-						var year = Today.getYear();
-						year = year < 2000 ? year + 1900 : year
-						year = year.toString().substr(2, 2);
-						var month = Today.getMonth() + 1;
-						var day = Today.getDate();
-						that.list[index][typename] = year + '.' + month + '.' + day; //修改data中的数据（不会更新视图）
-						var strJson = {}; //临时存放数据的Json
-						strJson = that.list[index]; //把真实数据存入临时的Json
-						that.$set(that.list, index, strJson) //更新视图
-					}
-				} else {
-					var stri = that.add[typename];
-					if(stri == undefined || stri.length == '') {
-						var Today = new Date()
-						var year = Today.getYear();
-						year = year < 2000 ? year + 1900 : year
-						year = year.toString().substr(2, 2);
-						var month = Today.getMonth() + 1;
-						var day = Today.getDate();
-						that.$set(that.add, typename, year + '.' + month + '.' + day)
-					}
+				if(row[typename] == undefined || row[typename].length == '') {
+					var Today = new Date()
+					var year = Today.getYear();
+					year = year < 2000 ? year + 1900 : year
+					year = year.toString().substr(2, 2);
+					var month = Today.getMonth() + 1;
+					var day = Today.getDate();
+					row[typename] = year + '.' + month + '.' + day; //修改data中的数据（不会更新视图）
 				}
 
 			},
@@ -1105,9 +1093,11 @@
 		margin: 0;
 		overflow: hidden;
 	}
+	
 	#app {
 		height: 100%;
 	}
+	
 	.el-row {
 		margin-bottom: 10px;
 		&:last-child {
@@ -1136,7 +1126,7 @@
 	
 	.el-table .cell {
 		font-size: 14px;
-		padding: 0!important;
+		padding: 0 5px!important;
 	}
 	
 	table .caret-wrapper {
