@@ -6,6 +6,9 @@ import VueCookie from 'vue-cookie';
 import Home from './Home'
 import router from './routers'
 import vueResource from 'vue-resource'
+import ElementUI from 'element-ui';
+
+Vue.use(ElementUI);
 Vue.use(VueRouter)
 Vue.use(vueResource);
 Vue.use(VueCookie);
