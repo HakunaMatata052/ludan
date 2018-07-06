@@ -1,7 +1,7 @@
 <template>
-	<div id="app" v-show="login" v-bind:class='togglebody=="open"?"shrink":""'>
+	<div id="app" v-show="login">
 		<el-container  style="height: 100%;">
-			<el-aside width="200px" style="background-color: rgb(238, 241, 246)">
+			<el-aside width="200px" style="background-color: rgb(238, 241, 246)" v-show="togglebody">
 				<el-menu :default-openeds="['1']">
 					<el-submenu index="1">
 						<template slot="title"><i class="el-icon-message"></i>各类型单量统计</template>
@@ -51,7 +51,7 @@
 							</el-dropdown-menu>
 						</el-dropdown>
 					</div>
-					<el-button><i class="el-icon-menu"></i></el-button>
+					<el-button @click="togglebody = !togglebody"><i class="el-icon-menu"></i></el-button>
 					<el-select placeholder="请选择" v-model="cxDate.year">
 						<el-option value="2018">2018年</el-option>
 						<el-option value="2017">2017年</el-option>
@@ -81,7 +81,6 @@
 				<el-main>
 					<el-row :gutter="20">
 						<el-col :span="8">
-
 							<el-input placeholder="请输入内容" v-model="search.company" clearable>
 								<template slot="prepend">分公司：</template>
 							</el-input>
@@ -613,7 +612,7 @@
 				},
 				login: 0,
 				isA: 'close',
-				togglebody: 'open',
+				togglebody: 1,
 				toggleShow: 1,
 				stat_edit: 'open'
 			}
@@ -644,14 +643,15 @@
 						if(item[0] == "代理商") {
 							addjson.remarks = item[1];
 						} else if(item[0] == "公司名称") {
-							addjson.customer = item[1];
+							addjson.customer = item[1].replace('/有限公司|制品厂/gi', '');
 						} else if(item[0] == "域名") {
 							var yuming = item[1].replace(/\[图片\]/gi, '')
+							yuming = yuming.replace('www.', '')
 							addjson.domains = yuming;
 						} else if(item[0] == "类型") {
 							addjson.type = item[1];
 						} else if(item[0] == "下单日期") {
-							addjson.xdate = item[1];
+							addjson.xdate = item[1].slice(2, item[1].length);
 						} else if(item[0] == "客服") {
 							addjson.business = item[1];
 						} else if(item[0] == "备注") {

@@ -244,6 +244,7 @@
 		box-shadow: 0 0 5px rgba(81, 203, 238, 1);
 		-webkit-box-shadow: 0 0 5px rgba(81, 203, 238, 1);
 		-moz-box-shadow: 0 0 5px rgba(81, 203, 238, 1);
+		    box-sizing: border-box;
 	}
 	
 	.zk_login li .login-inputk {
