@@ -41,7 +41,11 @@
 							path: '/'
 						})
 					} else {
-						layer.msg(res.data.msg)
+						that.$message({
+						type: 'error',
+						message: res.data.msg
+					});
+						layer.msg()
 					}
 				})
 			}

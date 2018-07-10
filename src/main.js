@@ -17,7 +17,6 @@ Vue.http.options.emulateJSON = true;
 Vue.http.options.headers = {
   'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
 };
-
 const vue = new Vue({
   router,
   render: h => h(Home)
