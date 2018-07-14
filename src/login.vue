@@ -44,8 +44,7 @@
 						that.$message({
 						type: 'error',
 						message: res.data.msg
-					});
-						layer.msg()
+						});
 					}
 				})
 			}
