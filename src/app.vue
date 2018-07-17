@@ -887,7 +887,6 @@
 			},
 			searchFn: function() {
 				var that = this;
-
 				that.loading = true;
 				var searchJson = that.search;
 				if(JSON.stringify(searchJson) != "{}") {
@@ -901,7 +900,8 @@
 							that.$message({
 								type: 'error',
 								message: res.data.msg
-							});
+							});							
+							that.loading = false;
 						}
 					}, function(res) {
 
@@ -913,6 +913,7 @@
 						type: 'error',
 						message: '请填写查询关键字!'
 					});
+					that.loading = false;
 				}
 
 			},
