@@ -477,7 +477,7 @@
 		name: 'app',
 		data: function() {
 			return {
-				get: 'api/?',
+				get: 'http://wjdh03.sjgogo.cn/apis/DoitHandler.ashx?token=57373A7E05CB44079B2F12C14A5E83A9',
 				username: "",
 				list: [],
 				viewlist: [],
@@ -742,21 +742,7 @@
 			}
 		},
 		methods: {
-			notify() {
-				this.$notify.info({
-					title: '提示',
-					message: this.message
-				});
-			},
-			handleScroll() {
-				var that = this;
-				var d = document.getElementById("main");
-				if(d.scrollTop + d.clientHeight == d.scrollHeight) {
-					//that.viewmore(that.viewnum)
-				}
-
-			},
-			shaixuan(item, value) {
+			shaixuan(item, value) { //左侧筛选
 				var that = this;
 				var newlist = [];
 				for(var i = 0; i < that.temlist.length; i++) {
@@ -766,7 +752,7 @@
 				}
 				that.viewlist = newlist;
 			},
-			exportExcel() {
+			exportExcel() {  //生成导出excel表格的数据
 				var newdata = [];
 				for(var i = this.list.length - 1; i >= 0; i--) {
 					var cell = [];
@@ -867,7 +853,7 @@
 				}
 				this.JSONToExcelConvertor(data.data, this.cxDate.year + '-' + this.cxDate.month + '下单表', data.title);
 			},
-			JSONToExcelConvertor(JSONData, FileName, ShowLabel) {
+			JSONToExcelConvertor(JSONData, FileName, ShowLabel) { //导出excel表格文件
 				//先转化json  
 				var arrData = typeof JSONData != 'object' ? JSON.parse(JSONData) : JSONData;
 				var excel = '<table>';
@@ -923,7 +909,7 @@
 				link.click();
 				document.body.removeChild(link);
 			},
-			dls_edit() {
+			dls_edit() {  //代理商快速录入
 				var that = this;
 				that.$prompt('快捷输入', '提示', {
 					inputType: 'textarea'
@@ -964,7 +950,7 @@
 				});
 
 			},
-			filter(value, row, column) {
+			filter(value, row, column) {  
 				const property = column['property'];
 				return row[property] === value;
 			},
@@ -1203,11 +1189,8 @@
 			},
 			tongji: function() {
 				var that = this;
-				
-
 				that.PageCount = that.list.length;
 				that.viewlist = that.changearray(1);
-
 			},
 			changepage: function(val) {
 				var that =this;
@@ -1228,26 +1211,6 @@
 				}
 				return viewlistjson;
 			},
-			arrCheck: function(arr) {
-				var newArr = [];
-				for(var i = 0; i < arr.length; i++) {
-					var newJson = {};
-					var temp = arr[i];
-					var count = 0;
-					for(var j = 0; j < arr.length; j++) {
-						if(arr[j] == temp) {
-							count++;
-							arr[j] = -1;
-						}
-					}
-					if(temp != -1) {
-						newJson.value = temp;
-						newJson.num = count;
-						newArr.push(newJson)
-					}
-				}
-				return newArr;
-			},
 			close: function() {
 				var that = this;
 				that.isShow = 0;
@@ -1260,10 +1223,6 @@
 					that.stat_edit = "open"
 				}
 				//that.$cookie.set('stat_edit', that.stat_edit, 1);
-			},
-			exportTable: function(type) {
-				var that = this;
-				tableExport('table', that.cxDate.year + '-' + that.cxDate.month + '下单表', type);
 			},
 			user: function() {
 				var that = this;
@@ -1303,35 +1262,6 @@
 				this.$router.push({
 					path: '/setting'
 				})
-			},
-			dls() {
-				var that = this;
-				var str = this.dailishang.split(/[\r\n]/g);
-				var addjson = {
-					'company': '代理商'
-				};
-				for(var i = 0; i < str.length; i++) {
-					var item = str[i].split(':');
-					if(item[0] == "代理商") {
-						addjson.remarks = item[1];
-					} else if(item[0] == "公司名称") {
-						addjson.customer = item[1];
-					} else if(item[0] == "域名") {
-						var yuming = item[1].replace(/\[图片\]/gi, '')
-						addjson.domains = yuming;
-					} else if(item[0] == "类型") {
-						addjson.type = item[1];
-					} else if(item[0] == "下单日期") {
-						addjson.xdate = item[1];
-					} else if(item[0] == "客服") {
-						addjson.business = item[1];
-					} else if(item[0] == "备注") {
-						var dqremarks = addjson.remarks;
-						addjson.remarks = dqremarks + '/' + (item[1].replace(/\[图片\]/gi, ''));
-					}
-				};
-				that.add = addjson;
-
 			}
 		},
 		mounted: function() {
