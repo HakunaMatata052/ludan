@@ -6,35 +6,34 @@
 					<el-submenu index="1">
 						<template slot="title"><i class="el-icon-message"></i>各类型单量统计</template>
 						<el-menu-item-group>
-							<el-menu-item index="1-1" @click="shaixuan('type','WJDH双模')">WJDH双模
-								<el-badge class="mark" :value="wjdhsm" /></el-menu-item>
-							<el-menu-item index="1-2" @click="shaixuan('type','WJDH电商')">WJDH电商
-								<el-badge class="mark" :value="wjdhds" /></el-menu-item>
-							<el-menu-item index="1-3">WJDH
-								<el-badge class="mark" :value="wjdhsm+wjdhds" /></el-menu-item>
-							<el-menu-item index="1-4" @click="shaixuan('type','营销宝')">营销宝
-								<el-badge class="mark" :value="yxb" /></el-menu-item>
-							<el-menu-item index="1-5" @click="shaixuan('type','常规')">常规
-								<el-badge class="mark" :value="cg" /></el-menu-item>
+							<el-menu-item index="1-1" v-for="item in statistics.type" @click="shaixuan('type',item.name)">{{item.name}}
+								<el-badge class="mark" :value="item.value" />
+							</el-menu-item>
+
 							<el-menu-item index="1-6" @click="showData()">全部
-								<el-badge class="mark" :value="all" /></el-menu-item>
+								<el-badge class="mark" :value="list.length" /></el-menu-item>
 						</el-menu-item-group>
 					</el-submenu>
 
 					<el-submenu index="2">
 						<template slot="title"><i class="el-icon-message"></i>各公司单量统计</template>
 						<el-menu-item-group>
-							<el-menu-item index="2-1" v-for="y in fgstj" @click="shaixuan('company',y.value)">{{y.value}}
-								<el-badge class="mark" :value="y.num" /></el-menu-item>
+							
+							<el-menu-item index="2-1" v-for="item in statistics.company" @click="shaixuan('company',item.name)">{{item.name}}
+								<el-badge class="mark" :value="item.value" />
+							</el-menu-item>
+							
 						</el-menu-item-group>
 					</el-submenu>
 
 					<el-submenu index="3">
 						<template slot="title"><i class="el-icon-message"></i>技术下单统计</template>
 						<el-menu-item-group>
-							<el-menu-item index="3-1" v-for="z in sjstj" @click="shaixuan('designer',z.value)">{{z.value}}
-								<el-badge class="mark" :value="z.num" />
+							
+							<el-menu-item index="3-1" v-for="item in statistics.artisan" @click="shaixuan('designer',item.name)">{{item.name}}
+								<el-badge class="mark" :value="item.value" />
 							</el-menu-item>
+							
 						</el-menu-item-group>
 					</el-submenu>
 				</el-menu>
@@ -485,6 +484,7 @@
 				editform: {},
 				viewnum: 0,
 				temlist: [],
+				statistics:{},
 				wjdhsm: 0,
 				wjdhds: 0,
 				yxb: 0,
@@ -764,7 +764,7 @@
 						newlist.push(that.temlist[i])
 					}
 				}
-				that.list = newlist;
+				that.viewlist = newlist;
 			},
 			exportExcel() {
 				var newdata = [];
@@ -1203,39 +1203,7 @@
 			},
 			tongji: function() {
 				var that = this;
-				var fgsname = [];
-				var sjsname = [];
-				var swdbname = [];
-				var swjlname = [];
-				that.wjdhsm = 0;
-				that.wjdhds = 0;
-				that.yxb = 0;
-				that.cg = 0;
-				that.fgstj = [];
-				that.sjstj = [];
-				for(var i = 0; i < that.list.length; i++) {
-					if(that.list[i].type == 'WJDH双模') {
-						that.wjdhsm++
-					} else if(that.list[i].type == 'WJDH电商') {
-						that.wjdhds++
-					} else if(that.list[i].type == '常规') {
-						that.cg++
-					} else if(that.list[i].type == '营销宝') {
-						that.yxb++
-					}
-					fgsname.push(that.list[i].company); //将所有出现的分公司名称push进数组
-					sjsname.push(that.list[i].designer); //设计师同上
-					swdbname.push(that.list[i].business); //商务代表同上
-					swjlname.push(that.list[i].manager); //商务经理同上
-
-				};
-				that.fgstj = that.arrCheck(fgsname); //统计数组中每个分公司出现的次数并写成["value":"成都一","value":5]的形式
-
-				that.sjstj = that.arrCheck(sjsname); //设计师同上
-				that.all = that.list.length;
-
-				that.swdb = that.arrCheck(swdbname);
-				that.swjl = that.arrCheck(swjlname);
+				
 
 				that.PageCount = that.list.length;
 				that.viewlist = that.changearray(1);
@@ -1382,6 +1350,7 @@
 				if(res.data.code == 0 || res.data.code == 3) {
 					that.login = 1;
 					that.list = res.data.data;
+					that.statistics = res.data.statistics;
 					that.temlist = res.data.data;
 					if(res.data.data.length == 0) {
 						that.$message({
