@@ -6,6 +6,9 @@ import VueCookie from 'vue-cookie';
 import Home from './Home'
 import router from './routers'
 import vueResource from 'vue-resource'
+import ElementUI from 'element-ui';
+
+Vue.use(ElementUI);
 Vue.use(VueRouter)
 Vue.use(vueResource);
 Vue.use(VueCookie);
@@ -14,7 +17,6 @@ Vue.http.options.emulateJSON = true;
 Vue.http.options.headers = {
   'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
 };
-
 const vue = new Vue({
   router,
   render: h => h(Home)
