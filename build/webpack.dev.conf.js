@@ -12,8 +12,10 @@ const portfinder = require('portfinder')
 
 const express = require('express')
 const app = express()
-var appData = require('../data.json') //加载本地数据文件
+var appData = require('../list.json') //加载本地数据文件
+var appData2 = require('../statistics.json') //加载本地数据文件
 var seller = appData //获取对应的本地数据
+var statistics = appData2
 var apiRoutes = express.Router()
 app.use('/api', apiRoutes)
 
@@ -64,6 +66,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
 						'username': '罗彬',
 						'msg': '加载成功！',
 						"date": '2018-5',
+						"statistics":statistics,
 						data: seller
 					}) //接口返回json数据，上面配置的数据seller就赋值给data请求后调用
 				}),
@@ -73,6 +76,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
 						'username': '罗彬',
 						'msg': '加载成功！',
 						"date": '2018-5',
+						"statistics":statistics,
 						data: seller
 					}) //接口返回json数据，上面配置的数据seller就赋值给data请求后调用
 				})

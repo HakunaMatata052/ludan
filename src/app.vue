@@ -1,21 +1,21 @@
 <template>
 	<div id="app" v-show="login">
 		<el-container style="height: 100%;">
-			<el-aside width="200px" style="background-color: rgb(238, 241, 246)" v-show="togglebody">
+			<el-aside width="200px" style="background-color: rgb(238, 241, 246)" v-show="togglebody" id="side">
 				<el-menu :default-openeds="['1','3']">
 					<el-submenu index="1">
 						<template slot="title"><i class="el-icon-message"></i>各类型单量统计</template>
 						<el-menu-item-group>
 							<el-menu-item index="1-1" @click="shaixuan('type','WJDH双模')">WJDH双模
-								<el-badge class="mark" :value="wjdhsm"/></el-menu-item>
+								<el-badge class="mark" :value="wjdhsm" /></el-menu-item>
 							<el-menu-item index="1-2" @click="shaixuan('type','WJDH电商')">WJDH电商
-								<el-badge class="mark" :value="wjdhds"/></el-menu-item>
+								<el-badge class="mark" :value="wjdhds" /></el-menu-item>
 							<el-menu-item index="1-3">WJDH
-								<el-badge class="mark" :value="wjdhsm+wjdhds"/></el-menu-item>
+								<el-badge class="mark" :value="wjdhsm+wjdhds" /></el-menu-item>
 							<el-menu-item index="1-4" @click="shaixuan('type','营销宝')">营销宝
-								<el-badge class="mark" :value="yxb"/></el-menu-item>
+								<el-badge class="mark" :value="yxb" /></el-menu-item>
 							<el-menu-item index="1-5" @click="shaixuan('type','常规')">常规
-								<el-badge class="mark" :value="cg"/></el-menu-item>
+								<el-badge class="mark" :value="cg" /></el-menu-item>
 							<el-menu-item index="1-6" @click="showData()">全部
 								<el-badge class="mark" :value="all" /></el-menu-item>
 						</el-menu-item-group>
@@ -78,7 +78,7 @@
 					</el-select>
 					<el-button icon="el-icon-search" type="primary" @click="chaxun"></el-button>
 				</el-header>
-				<el-main>
+				<el-main :id="'main'">
 					<el-row :gutter="20">
 						<el-col :span="8">
 							<el-input placeholder="请输入内容" v-model="search.company" clearable>
@@ -132,7 +132,7 @@
 							<el-button type="primary" icon="el-icon-tickets" size="mini" @click="exportExcel" circle></el-button>
 						</el-col>
 					</el-row>
-					<el-table id="asd" :data="add" :show-header="false" border style="width: 100%;" :row-class-name="tableRowClassName" v-if="stat_edit=='open'">
+					<el-table :data="add" :show-header="false" border style="width: 100%;" :row-class-name="tableRowClassName" v-if="stat_edit=='open'">
 						<el-table-column sortable prop="company" label="分公司" min-width="60">
 							<template slot-scope="scope">
 								<el-autocomplete v-model="add[0].company" :fetch-suggestions="queryCompany"></el-autocomplete>
@@ -238,7 +238,123 @@
 							</template>
 						</el-table-column>
 					</el-table>
-					<el-table :data="list" stripe border style="width: 100%;" v-bind:class='isA=="open"?"huyan":""' v-loading="loading">
+
+					<el-table :data="viewlist" stripe border style="width: 100%;" v-bind:class='isA=="open"?"huyan":""' v-loading="loading">
+						<el-table-column sortable prop="company" label="分公司" min-width="60">
+						</el-table-column>
+						<el-table-column sortable prop="business" label="商务代表" min-width="60">
+						</el-table-column>
+						<el-table-column sortable prop="manager" label="商务经理" min-width="60">
+						</el-table-column>
+						<el-table-column sortable prop="customer" label="客户名称" min-width="100">
+						</el-table-column>
+						<el-table-column sortable prop="domains" label="域名" min-width="120">
+						</el-table-column>
+						<el-table-column sortable prop="qdate" label="签单日期" min-width="60">
+						</el-table-column>
+						<el-table-column sortable prop="xdate" label="下单日期" min-width="60">
+						</el-table-column>
+						<el-table-column sortable prop="type" label="类别" min-width="80">
+						</el-table-column>
+						<el-table-column sortable prop="year" label="年限" min-width="60">
+						</el-table-column>
+						<el-table-column sortable prop="qmoney" label="签单金额" min-width="80">
+						</el-table-column>
+						<el-table-column sortable prop="smoney" label="实到" min-width="60">
+						</el-table-column>
+						<el-table-column sortable prop="remarks" label="备注" min-width="130">
+						</el-table-column>
+						<el-table-column sortable prop="designer" label="设计师" min-width="75">
+						</el-table-column>
+						<el-table-column sortable prop="programmer" label="程序" min-width="75">
+						</el-table-column>
+						<el-table-column sortable prop="workload" label="工作量" min-width="60">
+						</el-table-column>
+						<el-table-column sortable prop="home" label="首页认可" min-width="70">
+						</el-table-column>
+						<el-table-column sortable prop="program" label="程序认可" min-width="70">
+						</el-table-column>
+						<el-table-column sortable prop="online" label="上线日期" min-width="70">
+						</el-table-column>
+						<el-table-column sortable label="操作" width="140" fixed="right" v-if="stat_edit=='open'">
+							<template slot-scope="scope">
+								<el-button size="mini" type="primary" @click="editFn(scope.row)">编辑</el-button>
+								<el-button size="mini" type="danger" @click="deleteFn(scope.row)">删除</el-button>
+							</template>
+						</el-table-column>
+					</el-table>
+					<el-pagination :page-size="pagesize" layout="total,prev, pager, next, jumper" :total="PageCount" @current-change="changepage">
+					</el-pagination>
+					<el-dialog title="编辑" :visible.sync="dialogFormVisible">
+						<el-form :model="editform">
+							<el-form-item label="分公司" label-width="120px">
+								<el-autocomplete v-model="editform.company" :fetch-suggestions="queryCompany"></el-autocomplete>
+							</el-form-item>
+							<el-form-item label="商务代表" label-width="120px">
+								<el-autocomplete v-model="add[0].business" :fetch-suggestions="querySwdb"></el-autocomplete>
+							</el-form-item>
+							<el-form-item label="商务经理" label-width="120px">
+								<el-autocomplete v-model="editform.manager" :fetch-suggestions="querySwjl"></el-autocomplete>
+							</el-form-item>
+							<el-form-item label="客户名称" label-width="120px">
+								<el-input v-model="editform.customer"></el-input>
+							</el-form-item>
+							<el-form-item label="域名" label-width="120px">
+								<el-input v-model="editform.domains"></el-input>
+							</el-form-item>
+							<el-form-item label="签单日期" label-width="120px">
+								<el-input v-model="editform.qdate" auto-complete="off"></el-input>
+							</el-form-item>
+							<el-form-item label="下单日期" label-width="120px">
+								<el-input v-model="editform.xdate" auto-complete="off"></el-input>
+							</el-form-item>
+							<el-form-item label="类别" label-width="120px">
+								<el-select v-model="editform.type" placeholder="WJDH双模">
+									<el-option v-for="item in typeList" :label="item" :value="item"></el-option>
+								</el-select>
+							</el-form-item>
+							<el-form-item label="年限" label-width="120px">
+								<el-input v-model="editform.year" auto-complete="off"></el-input>
+							</el-form-item>
+							<el-form-item label="签单金额" label-width="120px">
+								<el-input v-model="editform.qmoney" auto-complete="off"></el-input>
+							</el-form-item>
+							<el-form-item label="实到" label-width="120px">
+								<el-input v-model="editform.smoney" auto-complete="off"></el-input>
+							</el-form-item>
+							<el-form-item label="备注" label-width="120px">
+								<el-input v-model="editform.remarks" auto-complete="off"></el-input>
+							</el-form-item>
+							<el-form-item label="设计师" label-width="120px">
+								<el-select v-model="editform.designer" placeholder="请选择设计师">
+									<el-option v-for="item in designer" :label="item.text" :value="item.text"></el-option>
+								</el-select>
+							</el-form-item>
+							<el-form-item label="程序" label-width="120px">
+								<el-select v-model="editform.programmer" placeholder="请选择程序猿">
+									<el-option v-for="item in programmer" :label="item.text" :value="item.text"></el-option>
+								</el-select>
+							</el-form-item>
+							<el-form-item label="工作量" label-width="120px">
+								<el-input v-model="editform.workload" auto-complete="off"></el-input>
+							</el-form-item>
+							<el-form-item label="首页认可" label-width="120px">
+								<el-input v-model="editform.home" auto-complete="off"></el-input>
+							</el-form-item>
+							<el-form-item label="程序认可" label-width="120px">
+								<el-input v-model="editform.program" auto-complete="off"></el-input>
+							</el-form-item>
+							<el-form-item label="上线日期" label-width="120px">
+								<el-input v-model="editform.online" auto-complete="off"></el-input>
+							</el-form-item>
+
+						</el-form>
+						<div slot="footer" class="dialog-footer">
+							<el-button @click="dialogFormVisible = false">取 消</el-button>
+							<el-button type="primary" @click="submitedit">确 定</el-button>
+						</div>
+					</el-dialog>
+					<!--<el-table :data="list" stripe border style="width: 100%;" v-bind:class='isA=="open"?"huyan":""' v-loading="loading"  v-if="close">
 						<el-table-column sortable prop="company" label="分公司" min-width="60">
 							<template slot-scope="scope">
 								<el-input v-model="scope.row.company" v-bind:disabled="stat_edit=='close'"></el-input>
@@ -349,7 +465,7 @@
 								<el-button size="mini" type="danger" @click="deleteFn(scope.row)">删除</el-button>
 							</template>
 						</el-table-column>
-					</el-table>
+					</el-table>-->
 
 				</el-main>
 			</el-container>
@@ -358,7 +474,6 @@
 	</div>
 </template>
 <script>
-
 	export default {
 		name: 'app',
 		data: function() {
@@ -366,6 +481,9 @@
 				get: 'api/?',
 				username: "",
 				list: [],
+				viewlist: [],
+				editform: {},
+				viewnum: 0,
 				temlist: [],
 				wjdhsm: 0,
 				wjdhds: 0,
@@ -608,7 +726,11 @@
 				togglebody: 1,
 				toggleShow: 1,
 				stat_edit: 'open',
-				loading: false
+				loading: false,
+				message: '',
+				dialogFormVisible: false,
+				PageCount: 0,
+				pagesize: 300
 			}
 		},
 		watch: {
@@ -620,11 +742,25 @@
 			}
 		},
 		methods: {
-			shaixuan(item,value){
+			notify() {
+				this.$notify.info({
+					title: '提示',
+					message: this.message
+				});
+			},
+			handleScroll() {
+				var that = this;
+				var d = document.getElementById("main");
+				if(d.scrollTop + d.clientHeight == d.scrollHeight) {
+					//that.viewmore(that.viewnum)
+				}
+
+			},
+			shaixuan(item, value) {
 				var that = this;
 				var newlist = [];
-				for(var i=0;i<that.temlist.length;i++){
-					if(that.temlist[i][item]==value){
+				for(var i = 0; i < that.temlist.length; i++) {
+					if(that.temlist[i][item] == value) {
 						newlist.push(that.temlist[i])
 					}
 				}
@@ -632,7 +768,7 @@
 			},
 			exportExcel() {
 				var newdata = [];
-				for(var i = 0; i < this.list.length; i++) {
+				for(var i = this.list.length - 1; i >= 0; i--) {
 					var cell = [];
 					var j = 0;
 					for(var attr in this.list[i]) {
@@ -811,7 +947,7 @@
 						} else if(item[0] == "类型") {
 							addjson.type = item[1];
 						} else if(item[0] == "下单日期") {
-							addjson.xdate = item[1];  //item[1].slice(2, item[1].length);
+							addjson.xdate = item[1]; //item[1].slice(2, item[1].length);
 						} else if(item[0] == "客服") {
 							addjson.business = item[1];
 						} else if(item[0] == "备注") {
@@ -900,7 +1036,7 @@
 							that.$message({
 								type: 'error',
 								message: res.data.msg
-							});							
+							});
 							that.loading = false;
 						}
 					}, function(res) {
@@ -939,7 +1075,7 @@
 					}).then(() => {
 						that.$http.post(that.get + 'action=add', addJson).then(function(res) {
 								that.list = res.data.data;
-								that.tongji()
+								that.tongji();
 								that.$message({
 									type: 'success',
 									message: '添加成功!'
@@ -972,7 +1108,12 @@
 			},
 			editFn: function(row) {
 				var that = this;
-				var editJosn = row;
+				that.dialogFormVisible = true;
+				that.editform = row;
+			},
+			submitedit: function() {
+				var that = this;
+				var editJosn = that.editform;
 				that.$confirm('确认修改？？', '提示', {
 					confirmButtonText: '确定',
 					cancelButtonText: '取消',
@@ -980,11 +1121,12 @@
 				}).then(() => {
 					that.$http.post(that.get + 'action=edit', editJosn).then(function(res) {
 						that.list = res.data.data;
-						that.tongji()
+						that.tongji();
 						that.$message({
 							type: 'success',
 							message: '修改成功!'
 						});
+						that.dialogFormVisible = false;
 					}, function(res) {
 						that.$message({
 							type: 'error',
@@ -1010,7 +1152,7 @@
 				}).then(() => {
 					that.$http.post(that.get + 'action=delete', deleteJosn).then(function(res) {
 						that.list = res.data.data;
-						that.tongji()
+						that.tongji();
 						that.$message({
 							type: 'success',
 							message: '删除成功!'
@@ -1094,6 +1236,29 @@
 
 				that.swdb = that.arrCheck(swdbname);
 				that.swjl = that.arrCheck(swjlname);
+
+				that.PageCount = that.list.length;
+				that.viewlist = that.changearray(1);
+
+			},
+			changepage: function(val) {
+				var that =this;
+				that.viewlist = that.changearray(val);
+				
+			},
+			changearray(val){
+				var that = this;
+				var viewlistjson = [];
+				var fullpage;
+				for(var i = (val-1)*that.pagesize; i < (val-1)*that.pagesize+that.pagesize; i++) {
+					if(that.list[i]==undefined){
+						break;
+					}else {
+						viewlistjson.push(that.list[i]);
+					}
+					
+				}
+				return viewlistjson;
 			},
 			arrCheck: function(arr) {
 				var newArr = [];
@@ -1203,6 +1368,7 @@
 		},
 		mounted: function() {
 			var that = this;
+			//document.getElementById("main").addEventListener('scroll', this.handleScroll);    //下拉执行 this.handleScroll
 			if(that.$cookie.get('stat_edit') != undefined) {
 				that.stat_edit = that.$cookie.get('stat_edit');
 			}
@@ -1291,6 +1457,10 @@
 		text-align: center;
 		background: none;
 		padding: 0;
+	}
+	
+	table td {
+		text-align: center;
 	}
 	
 	.el-table .cell {
