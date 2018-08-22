@@ -287,25 +287,25 @@
 					<el-dialog title="编辑" :visible.sync="dialogFormVisible">
 						<el-form :model="editform">
 							<el-form-item label="分公司" label-width="120px">
-								<el-autocomplete v-model="editform.company" :fetch-suggestions="queryCompany"></el-autocomplete>
+								<el-autocomplete v-model="editform.company" maxlength="5" :fetch-suggestions="queryCompany"></el-autocomplete>
 							</el-form-item>
 							<el-form-item label="商务代表" label-width="120px">
-								<el-autocomplete v-model="add[0].business" :fetch-suggestions="querySwdb"></el-autocomplete>
+								<el-autocomplete v-model="add[0].business"  maxlength="15" :fetch-suggestions="querySwdb"></el-autocomplete>
 							</el-form-item>
 							<el-form-item label="商务经理" label-width="120px">
-								<el-autocomplete v-model="editform.manager" :fetch-suggestions="querySwjl"></el-autocomplete>
+								<el-autocomplete v-model="editform.manager"  maxlength="15" :fetch-suggestions="querySwjl"></el-autocomplete>
 							</el-form-item>
 							<el-form-item label="客户名称" label-width="120px">
-								<el-input v-model="editform.customer"></el-input>
+								<el-input v-model="editform.customer"  maxlength="70"></el-input>
 							</el-form-item>
 							<el-form-item label="域名" label-width="120px">
-								<el-input v-model="editform.domains"></el-input>
+								<el-input v-model="editform.domains" maxlength="40"></el-input>
 							</el-form-item>
 							<el-form-item label="签单日期" label-width="120px">
-								<el-input v-model="editform.qdate" auto-complete="off"></el-input>
+								<el-input v-model="editform.qdate"  maxlength="30" auto-complete="off"></el-input>
 							</el-form-item>
 							<el-form-item label="下单日期" label-width="120px">
-								<el-input v-model="editform.xdate" auto-complete="off"></el-input>
+								<el-input v-model="editform.xdate"  maxlength="30" auto-complete="off"></el-input>
 							</el-form-item>
 							<el-form-item label="类别" label-width="120px">
 								<el-select v-model="editform.type" placeholder="WJDH双模">
@@ -313,13 +313,13 @@
 								</el-select>
 							</el-form-item>
 							<el-form-item label="年限" label-width="120px">
-								<el-input v-model="editform.year" auto-complete="off"></el-input>
+								<el-input v-model="editform.year" maxlength="20" auto-complete="off"></el-input>
 							</el-form-item>
 							<el-form-item label="签单金额" label-width="120px">
-								<el-input v-model="editform.qmoney" auto-complete="off"></el-input>
+								<el-input v-model="editform.qmoney"  maxlength="20" auto-complete="off"></el-input>
 							</el-form-item>
 							<el-form-item label="实到" label-width="120px">
-								<el-input v-model="editform.smoney" auto-complete="off"></el-input>
+								<el-input v-model="editform.smoney" maxlength="20" auto-complete="off"></el-input>
 							</el-form-item>
 							<el-form-item label="备注" label-width="120px">
 								<el-input v-model="editform.remarks" auto-complete="off"></el-input>
@@ -335,16 +335,16 @@
 								</el-select>
 							</el-form-item>
 							<el-form-item label="工作量" label-width="120px">
-								<el-input v-model="editform.workload" auto-complete="off"></el-input>
+								<el-input v-model="editform.workload"  maxlength="50" auto-complete="off"></el-input>
 							</el-form-item>
 							<el-form-item label="首页认可" label-width="120px">
-								<el-input v-model="editform.home" auto-complete="off"></el-input>
+								<el-input v-model="editform.home"  maxlength="20" auto-complete="off"></el-input>
 							</el-form-item>
 							<el-form-item label="程序认可" label-width="120px">
-								<el-input v-model="editform.program" auto-complete="off"></el-input>
+								<el-input v-model="editform.program" maxlength="20" auto-complete="off"></el-input>
 							</el-form-item>
 							<el-form-item label="上线日期" label-width="120px">
-								<el-input v-model="editform.online" auto-complete="off"></el-input>
+								<el-input v-model="editform.online"  maxlength="20" auto-complete="off"></el-input>
 							</el-form-item>
 
 						</el-form>
@@ -477,7 +477,7 @@
 		name: 'app',
 		data: function() {
 			return {
-				get: 'http://wjdh03.sjgogo.cn/apis/DoitHandler.ashx?token=57373A7E05CB44079B2F12C14A5E83A9',
+				get: '',
 				username: "",
 				list: [],
 				viewlist: [],
@@ -984,13 +984,14 @@
 				var that = this;
 				that.loading = true;
 				if(year == undefined) {
-					var getUrl = that.get;
+					var getUrl = 'apis/DoitHandler.ashx?action=home';
 				} else {
-					var getUrl = that.get + 'action=chaxun&year=' + year + '&month=' + month;
+					var getUrl = 'apis/DoitHandler.ashx?action=tongji&addtime=' + year + '-' + month;
 				};
 				that.$http.get(getUrl).then(function(res) {
 					if(res.data.code == 0) {
 						that.list = res.data.data;
+						that.statistics = res.data.statistics;
 						that.temlist = res.data.data;
 						that.tongji();
 						that.loading = false;
@@ -1013,7 +1014,7 @@
 				var searchJson = that.search;
 				if(JSON.stringify(searchJson) != "{}") {
 					console.log(searchJson)
-					that.$http.post(that.get + 'action=search', searchJson).then(function(res) {
+					that.$http.post('apis/DoitHandler.ashx?action=search', searchJson).then(function(res) {
 						if(res.data.code == 0) {
 							that.list = res.data.data;
 							that.tongji();
@@ -1059,8 +1060,9 @@
 						cancelButtonText: '取消',
 						type: 'warning'
 					}).then(() => {
-						that.$http.post(that.get + 'action=add', addJson).then(function(res) {
-								that.list = res.data.data;
+						that.$http.post('apis/EditHandler.ashx?action=add', addJson).then(function(res) {
+						that.list = res.data.data;
+						that.statistics = res.data.statistics;
 								that.tongji();
 								that.$message({
 									type: 'success',
@@ -1105,14 +1107,15 @@
 					cancelButtonText: '取消',
 					type: 'warning'
 				}).then(() => {
-					that.$http.post(that.get + 'action=edit', editJosn).then(function(res) {
+					that.$http.post('apis/EditHandler.ashx?action=update', editJosn).then(function(res) {
 						that.list = res.data.data;
+						that.statistics = res.data.statistics;
 						that.tongji();
+						that.dialogFormVisible = false;
 						that.$message({
 							type: 'success',
 							message: '修改成功!'
 						});
-						that.dialogFormVisible = false;
 					}, function(res) {
 						that.$message({
 							type: 'error',
@@ -1136,8 +1139,9 @@
 					cancelButtonText: '取消',
 					type: 'warning'
 				}).then(() => {
-					that.$http.post(that.get + 'action=delete', deleteJosn).then(function(res) {
+					that.$http.post('apis/EditHandler.ashx?action=del', deleteJosn).then(function(res) {
 						that.list = res.data.data;
+						that.statistics = res.data.statistics;
 						that.tongji();
 						that.$message({
 							type: 'success',
@@ -1234,10 +1238,16 @@
 			},
 			logout: function() {
 				var that = this;
-				that.$http.get(that.get + 'action=logout').then(function(res) {
-					this.$router.push({
-						path: '/login'
-					})
+				that.$http.get('apis/LoginHandler.ashx?action=logout').then(function(res) {
+					if(res.data.code == 0) {
+						that.$message({
+							type: 'success',
+							message: res.data.msg
+						});
+						this.$router.push({
+							path: '/login'
+						})
+					}
 				}, function(res) {});
 			},
 			toggle() {
@@ -1276,8 +1286,8 @@
 			if(that.$cookie.get('isA') != undefined) {
 				that.isA = that.$cookie.get('isA');
 			}
-			that.$http.get(that.get).then(function(res) {
-				if(res.data.code == 0 || res.data.code == 3) {
+			that.$http.get('apis/DoitHandler.ashx?action=home').then(function(res) {
+				if(res.data.code == 0) {
 					that.login = 1;
 					that.list = res.data.data;
 					that.statistics = res.data.statistics;
@@ -1304,16 +1314,11 @@
 						that.designer = that.designer.concat(that.design1, that.design2, that.design3, that.fgsdesign)
 					};
 					that.tongji();
-				} else if(res.data.code == 2) {
+				} else {
 					this.$router.push({
 						path: '/login'
 					})
-				} else {
-					that.$message({
-						type: 'error',
-						message: res.data.msg
-					});
-				}
+				} 
 			}, function(res) {
 
 			});

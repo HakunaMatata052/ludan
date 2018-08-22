@@ -5,7 +5,7 @@ import Login from './login.vue'
 import Setting from './setting.vue'
 Vue.use(VueRouter);
 const router = new VueRouter({
-    mode:'hash',//hash 打包需要使用hash 无#： history
+    mode:'history',//hash 打包需要使用hash 无#： history
     routes: [
         {//前台路由配置
             path:'/',

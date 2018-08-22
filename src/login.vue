@@ -3,7 +3,7 @@
 		<div id="login">
 			<div class="zk_login">
 				<ul class="login-form">
-					<li><input name="adminname" type="text" class="login-input" placeholder="管理员账号" title="管理员账号" v-model="login.adminname" />
+					<li><input name="txtUserName" type="text" class="login-input" placeholder="管理员账号" title="管理员账号" v-model="login.txtUserName" />
 						<label class="icon user" for="txtUserName"></label>
 					</li>
 
@@ -35,8 +35,12 @@
 		methods: {
 			submit: function() {
 				var that = this;
-				that.$http.post('api/?action=login', that.login).then(function(res) {
+				that.$http.post('apis/LoginHandler.ashx?action=login', that.login).then(function(res) {
 					if(res.data.code == 0) {
+						that.$message({
+						type: 'success',
+						message: res.data.msg
+						});
 						this.$router.push({
 							path: '/'
 						})
@@ -51,7 +55,7 @@
 		},
 		mounted: function() {
 			var that = this;
-			that.$http.get('api/').then(function(res) {
+			that.$http.get('apis/LoginHandler.ashx?action=login').then(function(res) {
 				if(res.data.code == 0) {
 					this.$router.push({
 						path: '/'
@@ -61,7 +65,7 @@
 		}
 	}
 </script>
-<style scoped>
+<style>
 
 	
 	* {
