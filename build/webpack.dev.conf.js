@@ -17,7 +17,7 @@ var appData2 = require('../statistics.json') //加载本地数据文件
 var seller = appData //获取对应的本地数据
 var statistics = appData2
 var apiRoutes = express.Router()
-app.use('/api', apiRoutes)
+app.use('/apis', apiRoutes)
 
 const HOST = process.env.HOST
 const PORT = process.env.PORT && Number(process.env.PORT)
@@ -47,12 +47,10 @@ const devWebpackConfig = merge(baseWebpackConfig, {
 		host: HOST || config.dev.host,
 		port: PORT || config.dev.port,
 		open: config.dev.autoOpenBrowser,
-		overlay: config.dev.errorOverlay ?
-			{
-				warnings: false,
-				errors: true
-			} :
-			false,
+		overlay: config.dev.errorOverlay ? {
+			warnings: false,
+			errors: true
+		} : false,
 		publicPath: config.dev.assetsPublicPath,
 		proxy: config.dev.proxyTable,
 		quiet: true, // necessary for FriendlyErrorsPlugin
@@ -60,26 +58,66 @@ const devWebpackConfig = merge(baseWebpackConfig, {
 			poll: config.dev.poll,
 		},
 		before(app) {
-			app.get('/api', (req, res) => {
-					res.json({
-						code: 0,
-						'username': '罗彬',
-						'msg': '加载成功！',
-						"date": '2018-5',
-						"statistics":statistics,
-						data: seller
-					}) //接口返回json数据，上面配置的数据seller就赋值给data请求后调用
-				}),
-				app.post('/api', function(req, res) { // 注意这里改为post就可以了
-					res.json({
-						code: 0,
-						'username': '罗彬',
-						'msg': '加载成功！',
-						"date": '2018-5',
-						"statistics":statistics,
-						data: seller
-					}) //接口返回json数据，上面配置的数据seller就赋值给data请求后调用
-				})
+			app.get('/apis/DoitHandler', (req, res) => {
+				res.json({
+					code: 0,
+					'username': '罗彬',
+					'msg': '加载成功！',
+					"date": '2018-5',
+					"statistics": statistics,
+					data: seller
+				}) //接口返回json数据，上面配置的数据seller就赋值给data请求后调用
+			}),
+			app.post('/apis/DoitHandler', function(req, res) { // 注意这里改为post就可以了
+				res.json({
+					code: 0,
+					'username': '罗彬',
+					'msg': '加载成功！',
+					"date": '2018-5',
+					"statistics": statistics,
+					data: seller
+				}) //接口返回json数据，上面配置的数据seller就赋值给data请求后调用
+			}),
+			app.get('/apis/EditHandler', (req, res) => {
+				res.json({
+					code: 0,
+					'username': '罗彬',
+					'msg': '加载成功！',
+					"date": '2018-5',
+					"statistics": statistics,
+					data: seller
+				}) //接口返回json数据，上面配置的数据seller就赋值给data请求后调用
+			}),
+			app.post('/apis/EditHandler', function(req, res) { // 注意这里改为post就可以了
+				res.json({
+					code: 0,
+					'username': '罗彬',
+					'msg': '加载成功！',
+					"date": '2018-5',
+					"statistics": statistics,
+					data: seller
+				}) //接口返回json数据，上面配置的数据seller就赋值给data请求后调用
+			}),
+			app.get('/apis/LoginHandler', (req, res) => {
+				res.json({
+					code: 0,
+					'username': '罗彬',
+					'msg': '加载成功！',
+					"date": '2018-5',
+					"statistics": statistics,
+					data: seller
+				}) //接口返回json数据，上面配置的数据seller就赋值给data请求后调用
+			}),
+			app.post('/apis/LoginHandler', function(req, res) { // 注意这里改为post就可以了
+				res.json({
+					code: 0,
+					'username': '罗彬',
+					'msg': '加载成功！',
+					"date": '2018-5',
+					"statistics": statistics,
+					data: seller
+				}) //接口返回json数据，上面配置的数据seller就赋值给data请求后调用
+			})
 		}
 	},
 	plugins: [
@@ -121,8 +159,7 @@ module.exports = new Promise((resolve, reject) => {
 					messages: [`Your application is running here: http://${devWebpackConfig.devServer.host}:${port}`],
 				},
 				onErrors: config.dev.notifyOnErrors ?
-					utils.createNotifierCallback() :
-					undefined
+					utils.createNotifierCallback() : undefined
 			}))
 
 			resolve(devWebpackConfig)

@@ -30,13 +30,14 @@
 	export default {
 		data() {
 			return {
-				login: {}
+				login: {},
+				loginapi: 'apis/LoginHandler/',
 			}
 		},
 		methods: {
 			submit: function() {
 				var that = this;
-				that.$http.post('apis/LoginHandler.ashx?action=login', that.login).then(function(res) {
+				that.$http.post(that.loginapi+'?action=login', that.login).then(function(res) {
 					if(res.data.code == 0) {
 						that.$message({
 						type: 'success',
@@ -56,7 +57,7 @@
 		},
 		mounted: function() {
 			var that = this;
-			that.$http.get('apis/LoginHandler.ashx?action=login').then(function(res) {
+			that.$http.get(that.loginapi+'?action=login').then(function(res) {
 				if(res.data.code == 0) {
 					this.$router.push({
 						path: '/'

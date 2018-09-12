@@ -41,6 +41,8 @@
 			<el-container style="overflow: auto;">
 				<el-header>
 					<div style="float: right;font-size: 20px;">
+						<i class="el-icon-upload" @click="server"></i></a>
+						<a href="/"><i class="el-icon-tickets"></i></a>
 						<i class="el-icon-refresh" @click="showData()"></i>
 						<el-dropdown>
 							<i class="el-icon-setting" style="margin-right: 15px;font-size: 20px;"></i>
@@ -197,10 +199,14 @@
 						</el-table-column>
 						<el-table-column sortable prop="designer" label="设计师" min-width="75">
 							<template slot-scope="scope">
-								<el-select v-model="add[0].designer" placeholder="设计狮">
-									<el-option v-for="item in designer" :key="item.value" :label="item.label" :value="item.value">
+								<el-select v-model="add[0].designer" placeholder="设计狮" @change="selectinputfn" v-if="selectinput == false">
+									<el-option v-for="item in designer" :key="item.value" :label="item.value" :value="item.value">
 									</el-option>
+									<el-option label="其他" value="其他"></el-option>
 								</el-select>
+
+								<el-input v-model="add[0].designer" value="" placeholder="设计狮" v-if="selectinput == true" @blur="selectinput=false"></el-input>
+
 							</template>
 						</el-table-column>
 						<el-table-column sortable prop="programmer" label="程序" min-width="75">
@@ -266,14 +272,25 @@
 									{{scope.row.remarks}}
 									<div slot="reference" class="name-wrapper">
 										<el-tag type="danger" size="medium" v-if="scope.row.remarks.indexOf('加急')>=0">{{scope.row.remarks}}</el-tag>
-										<el-tag size="medium" v-else>{{scope.row.remarks}}</el-tag>
+										<el-tag type="success" size="medium" v-else-if="scope.row.company=='代理商'">{{scope.row.remarks}}</el-tag>
+										<el-tag size="medium" v-else-if="scope.row.remarks.indexOf('策划')>=0">{{scope.row.remarks}}</el-tag>
+										<template v-else>
+											{{scope.row.remarks}}
+										</template>
+
 									</div>
 								</el-popover>
 							</template>
 						</el-table-column>
 						<el-table-column sortable prop="designer" label="设计师" min-width="75">
+							<template slot-scope="scope">
+								<div @dblclick="noticefn(scope.row.designer,scope.row)" class="btn" data-clipboard-target="#noticeCon">{{scope.row.designer}}</div>
+							</template>
 						</el-table-column>
 						<el-table-column sortable prop="programmer" label="程序" min-width="75">
+							<template slot-scope="scope">
+								<div @dblclick="noticefn(scope.row.programmer,scope.row)" class="btn" data-clipboard-target="#noticeCon">{{scope.row.programmer}}</div>
+							</template>
 						</el-table-column>
 						<el-table-column sortable prop="workload" label="工作量" min-width="60">
 						</el-table-column>
@@ -292,6 +309,7 @@
 					</el-table>
 					<el-pagination :page-size="pagesize" layout="total,prev, pager, next, jumper" :total="PageCount" @current-change="changepage">
 					</el-pagination>
+					<textarea :value="noticeCon" style="opacity: 0;" id="noticeCon"></textarea>
 					<el-dialog title="编辑" :visible.sync="dialogFormVisible">
 						<el-form :model="editform">
 							<el-form-item label="分公司" label-width="120px">
@@ -333,9 +351,12 @@
 								<el-input v-model="editform.remarks" auto-complete="off"></el-input>
 							</el-form-item>
 							<el-form-item label="设计师" label-width="120px">
-								<el-select v-model="editform.designer" placeholder="设计狮">
-									<el-option v-for="item in designer" :label="item.text" :value="item.text"></el-option>
+								<el-select v-model="editform.designer" placeholder="设计狮" @change="selectinputfn" v-if="selectinput == false">
+									<el-option v-for="item in designer" :key="item.value" :label="item.value" :value="item.value">
+									</el-option>
+									<el-option label="其他" value="其他"></el-option>
 								</el-select>
+								<el-input v-model="editform.designer" value="" placeholder="设计狮" v-if="selectinput == true" @blur="selectinput=false"></el-input>
 							</el-form-item>
 							<el-form-item label="程序" label-width="120px">
 								<el-select v-model="editform.programmer" placeholder="程序猿">
@@ -346,13 +367,13 @@
 								<el-input v-model="editform.workload" maxlength="50" auto-complete="off"></el-input>
 							</el-form-item>
 							<el-form-item label="首页认可" label-width="120px">
-								<el-input v-model="editform.home" maxlength="20" auto-complete="off"></el-input>
+								<el-input v-model="editform.home" maxlength="20" auto-complete="off" @focus="today('home',editform)"></el-input>
 							</el-form-item>
 							<el-form-item label="程序认可" label-width="120px">
 								<el-input v-model="editform.program" maxlength="20" auto-complete="off"></el-input>
 							</el-form-item>
 							<el-form-item label="上线日期" label-width="120px">
-								<el-input v-model="editform.online" maxlength="20" auto-complete="off"></el-input>
+								<el-input v-model="editform.online" maxlength="20" auto-complete="off" @focus="today('online',editform)"></el-input>
 							</el-form-item>
 
 						</el-form>
@@ -481,11 +502,17 @@
 	</div>
 </template>
 <script>
+	import Vue from 'vue'
+	import VueClipboard from 'vue-clipboard2'
+	VueClipboard.config.autoSetContainer = true // add this line
+	Vue.use(VueClipboard)
 	export default {
 		name: 'app',
 		data: function() {
 			return {
-				get: '',
+				listapi: 'apis/DoitHandler/',
+				editapi: 'apis/EditHandler/',
+				loginapi: 'apis/LoginHandler/',
 				username: "",
 				list: [],
 				viewlist: [],
@@ -513,227 +540,148 @@
 				designer: [],
 				design1: [{
 					"text": "闫真",
-					"value": "闫真"
+					"value": "闫真",
+					"qq": "2039832778"
 				}, {
 					"text": "王巧",
 					"value": "王巧",
+					"qq": "1301145916"
 				}, {
 					"text": "崔美霞",
-					"value": "崔美霞"
+					"value": "崔美霞",
+					"qq": "2834151356"
 				}, {
 					"text": "石婧",
-					"value": "石婧"
+					"value": "石婧",
+					"qq": "2401164442"
 				}, {
 					"text": "李强",
-					"value": "李强"
+					"value": "李强",
+					"qq": "3275290873"
 				}, {
 					"text": "金文文",
-					"value": "金文文"
-				}, {
-					"text": "赵玉娇",
-					"value": "赵玉娇"
-				}, {
-					"text": "史娜",
-					"value": "史娜"
-				}, {
-					"text": "高艳",
-					"value": "高艳"
-				}, {
-					"text": "高茵",
-					"value": "高茵"
-				}, {
-					"text": "王建",
-					"value": "王建"
-				}, {
-					"text": "胡隆飞",
-					"value": "胡隆飞"
-				}, {
-					"text": "梁培培",
-					"value": "梁培培"
-				}, {
-					"text": "朱孔鹤",
-					"value": "朱孔鹤"
-				}, {
-					"text": "刘仁东",
-					"value": "刘仁东"
+					"value": "金文文",
+					"qq": "3280037248"
 				}],
 				design2: [{
 					"text": "罗彬",
-					"value": "罗彬"
+					"value": "罗彬",
+					"qq": ""
 				}, {
 					"text": "周鹏飞",
-					"value": "周鹏飞"
+					"value": "周鹏飞",
+					"qq": "3211793508"
 				}, {
 					"text": "冯燕",
-					"value": "冯燕"
+					"value": "冯燕",
+					"qq": "447269611"
 				}, {
 					"text": "唐红红",
-					"value": "唐红红"
+					"value": "唐红红",
+					"qq": "3274240258"
 				}, {
 					"text": "陈鑫",
-					"value": "陈鑫"
+					"value": "陈鑫",
+					"qq": "3150180370"
 				}, {
 					"text": "宇文锦",
-					"value": "宇文锦"
-				}, {
-					"text": "朱文娟",
-					"value": "朱文娟"
-				}, {
-					"text": "陈菲",
-					"value": "陈菲"
-				}, {
-					"text": "赵娇",
-					"value": "赵娇"
-				}, {
-					"text": "陈慧峰",
-					"value": "陈慧峰"
-				}, {
-					"text": "冯婉君",
-					"value": "冯婉君"
-				}, {
-					"text": "许勃",
-					"value": "许勃"
-				}, {
-					"text": "刘丽媛",
-					"value": "刘丽媛"
-				}, {
-					"text": "张岩",
-					"value": "张岩"
-				}, {
-					"text": "肖珍静远",
-					"value": "肖珍静远"
-				}, {
-					"text": "王明娟",
-					"value": "王明娟"
-				}, {
-					"text": "谢秋姣",
-					"value": "谢秋姣"
+					"value": "宇文锦",
+					"qq": "2014990040"
 				}],
 				design3: [{
 					"text": "吴彦蓉",
-					"value": "吴彦蓉"
+					"value": "吴彦蓉",
+					"qq": "2016984935"
 				}, {
 					"text": "马利丽",
-					"value": "马利丽"
+					"value": "马利丽",
+					"qq": "3078136298"
 				}, {
 					"text": "钟杰敏",
-					"value": "钟杰敏"
+					"value": "钟杰敏",
+					"qq": "2744211684"
 				}, {
 					"text": "王卓",
-					"value": "王卓"
+					"value": "王卓",
+					"qq": "3275416239"
 				}, {
 					"text": "高欢",
-					"value": "高欢"
+					"value": "高欢",
+					"qq": "2160647376"
 				}, {
 					"text": "郭玉兰",
-					"value": "郭玉兰"
+					"value": "郭玉兰",
+					"qq": "2805830094"
 				}],
 				design4: [{
 					"text": "高翔",
-					"value": "高翔"
+					"value": "高翔",
+					"qq": "2962813967"
 				}, {
 					"text": "钱珍",
-					"value": "钱珍"
+					"value": "钱珍",
+					"qq": "3223933260"
 				}],
 				fgsdesign: [{
 						"text": "T",
-						"value": "任林"
+						"value": "任林",
+						"qq": "483303587"
 					}, {
 						"text": "U",
-						"value": "谢小良"
+						"value": "谢小良",
+						"qq": "483303587"
 					}, {
 						"text": "V",
-						"value": "杨玲"
+						"value": "杨玲",
+						"qq": "483303587"
 					}, {
 						"text": "W",
-						"value": "吴帅"
+						"value": "吴帅",
+						"qq": "3188386448"
 					}, {
 						"text": "X",
-						"value": "杜友为"
+						"value": "杜友为",
+						"qq": "3188386448"
 					}, {
 						"text": "Y",
-						"value": "向松"
-					}, {
-						"value": "苏俊凌"
+						"value": "向松",
+						"qq": "2439418622"
 					},
 					{
-						"value": "王艳梅"
+						"value": "朱凯",
+						"qq": ""
 					},
 					{
-						"value": "童丽萍"
+						"value": "康卫峰",
+						"qq": ""
 					},
 					{
-						"value": "谢倩"
-					},
-					{
-						"value": "高平萍"
-					},
-					{
-						"value": "李晓霞"
-					},
-					{
-						"value": "罗成"
-					},
-					{
-						"value": "陈冉"
-					},
-					{
-						"value": "陈静"
+						"value": "邢亮",
+						"qq": ""
 					}
 				],
 				programmer: [{
 						"text": "张田",
-						"value": "张田"
+						"value": "张田",
+						"qq": ""
 					},
 					{
 						"text": "孙琪",
-						"value": "孙琪"
+						"value": "孙琪",
+						"qq": ""
 					},
 					{
 						"text": "董佳旗",
-						"value": "董佳旗"
+						"value": "董佳旗",
+						"qq": ""
 					},
 					{
 						"text": "兰帆",
-						"value": "兰帆"
-					}, {
-						"text": "刘耀",
-						"value": "刘耀"
-					},
-					{
-						"text": "杨如",
-						"value": "杨如"
-					},
-					{
-						"text": "弥怀璋",
-						"value": "弥怀璋"
-					},
-					{
-						"text": "王明琳",
-						"value": "王明琳"
-					},
-					{
-						"text": "杨旭鹏",
-						"value": "杨旭鹏"
-					},
-					{
-						"text": "张龙",
-						"value": "张龙"
-					},
-					{
-						"text": "朱时秀",
-						"value": "朱时秀"
-					},
-					{
-						"text": "李晓",
-						"value": "李晓"
-					},
-					{
-						"text": "郭宏柱",
-						"value": "郭宏柱"
+						"value": "兰帆",
+						"qq": ""
 					}
-
 				],
+				selectinput: false,
 				isShow: 0,
 				cxDate: {
 					year: '',
@@ -748,7 +696,8 @@
 				message: '',
 				dialogFormVisible: false,
 				PageCount: 0,
-				pagesize: 300
+				pagesize: 300,
+				noticeCon: ''
 			}
 		},
 		watch: {
@@ -943,7 +892,7 @@
 						if(item[0] == "代理商") {
 							addjson.remarks = item[1];
 						} else if(item[0] == "公司名称") {
-							addjson.customer = item[1].replace('/有限公司|制品厂/gi', '');
+							addjson.customer = item[1].replace(/有限公司|制品厂/gi, '');
 						} else if(item[0] == "域名") {
 							var yuming = item[1].replace(/\[图片\]/gi, '')
 							yuming = yuming.replace('www.', '')
@@ -1002,9 +951,9 @@
 				var that = this;
 				that.loading = true;
 				if(year == undefined) {
-					var getUrl = 'apis/DoitHandler.ashx?action=home';
+					var getUrl = that.listapi + '?action=home';
 				} else {
-					var getUrl = 'apis/DoitHandler.ashx?action=tongji&addtime=' + year + '-' + month;
+					var getUrl = that.listapi + '?action=tongji&addtime=' + year + '-' + month;
 				};
 				that.$http.get(getUrl).then(function(res) {
 					if(res.data.code == 0) {
@@ -1032,7 +981,7 @@
 				var searchJson = that.search;
 				if(JSON.stringify(searchJson) != "{}") {
 					console.log(searchJson)
-					that.$http.post('apis/DoitHandler.ashx?action=search', searchJson).then(function(res) {
+					that.$http.post(that.listapi + '?action=search', searchJson).then(function(res) {
 						if(res.data.code == 0) {
 							that.list = res.data.data;
 							that.tongji();
@@ -1079,7 +1028,7 @@
 						cancelButtonText: '取消',
 						type: 'warning'
 					}).then(() => {
-						that.$http.post('apis/EditHandler.ashx?action=add', addJson).then(function(res) {
+						that.$http.post(that.editapi + '?action=add', addJson).then(function(res) {
 								that.list = res.data.data;
 								that.viewlist = res.data.data;
 								that.statistics = res.data.statistics;
@@ -1127,15 +1076,22 @@
 					cancelButtonText: '取消',
 					type: 'warning'
 				}).then(() => {
-					that.$http.post('apis/EditHandler.ashx?action=update', editJosn).then(function(res) {
-						that.list = res.data.data;
-						that.viewlist = res.data.data;
-						that.statistics = res.data.statistics;
-						that.dialogFormVisible = false;
-						that.$message({
-							type: 'success',
-							message: '修改成功!'
-						});
+					that.$http.post(that.editapi + '?action=update', editJosn).then(function(res) {
+						if(res.data.code == "0") {
+							that.list = res.data.data;
+							that.viewlist = res.data.data;
+							that.statistics = res.data.statistics;
+							that.dialogFormVisible = false;
+							that.$message({
+								type: 'success',
+								message: '修改成功!'
+							});
+						} else {
+							that.$message({
+								type: 'error',
+								message: res.data.msg
+							});
+						}
 					}, function(res) {
 						that.$message({
 							type: 'error',
@@ -1160,7 +1116,7 @@
 					cancelButtonText: '取消',
 					type: 'warning'
 				}).then(() => {
-					that.$http.post('apis/EditHandler.ashx?action=del', deleteJosn).then(function(res) {
+					that.$http.post(that.editapi + '?action=del', deleteJosn).then(function(res) {
 						that.list = res.data.data;
 						that.viewlist = res.data.data;
 						that.statistics = res.data.statistics;
@@ -1289,7 +1245,7 @@
 			},
 			logout: function() {
 				var that = this;
-				that.$http.get('apis/LoginHandler.ashx?action=logout').then(function(res) {
+				that.$http.get(that.loginapi + '?action=logout').then(function(res) {
 					if(res.data.code == 0) {
 						that.$message({
 							type: 'success',
@@ -1319,6 +1275,48 @@
 				//that.$cookie.set('togglebody', that.togglebody, 1);
 
 			},
+			noticefn(name, content) {
+				var that = this;
+				var tempcon = [];
+				for(var attr in content) {
+					//tempcon+=attr+':'+content[attr]+'\r\n'
+					tempcon.push(content[attr])
+				}
+				tempcon = tempcon.join("&");
+				tempcon = tempcon.replace(/&+/gi, '\r\n')
+				that.noticeCon = tempcon;
+				this.$copyText(this.noticeCon).then(function(e) {
+					for(var i = 0; i < that.designer.length; i++) {
+						if(name == that.designer[i].value) {
+							var qqSrc = "tencent://message/?uin=" + that.designer[i].qq + "&Site=" + that.designer[i].qq + "&Menu=yes";
+							//window.open(qqSrc); 
+							var c = document.createElement('iframe');
+							c.src = qqSrc;
+							c.style.setProperty('display', 'none', 'important');
+							document.getElementById("app").appendChild(c);
+							setTimeout(function() {
+								c.parentNode.removeChild(c);
+							}, 1000)
+
+						}
+					}
+
+				}, function(e) {
+					alert('Can not copy')
+					console.log(e)
+				})
+
+			},
+			selectinputfn(a) {
+				if(a == '其他') {
+					this.selectinput = true;
+				}
+			},
+			server() {
+				this.$router.push({
+					path: '/server'
+				})
+			},
 			setting() {
 				this.$router.push({
 					path: '/setting'
@@ -1337,7 +1335,7 @@
 			if(that.$cookie.get('isA') != undefined) {
 				that.isA = that.$cookie.get('isA');
 			}
-			that.$http.get('apis/DoitHandler.ashx?action=home').then(function(res) {
+			that.$http.get(that.listapi + '?action=home').then(function(res) {
 				if(res.data.code == 0) {
 					that.login = 1;
 					that.list = res.data.data;
@@ -1463,9 +1461,11 @@
 	.el-autocomplete-suggestion li {
 		padding: 0 10px;
 	}
+	
 	.el-form-item {
 		margin-bottom: 10px;
 	}
+	
 	.huyan {
 		background: #cce8cf;
 	}

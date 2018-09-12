@@ -3,9 +3,10 @@ import VueRouter from 'vue-router';
 import App from './app.vue'
 import Login from './login.vue'
 import Setting from './setting.vue'
+import Server from './server.vue'
 Vue.use(VueRouter);
 const router = new VueRouter({
-    mode:'history',//hash 打包需要使用hash 无#： history
+    mode:'hash',//hash 打包需要使用hash 无#： history
     routes: [
         {//前台路由配置
             path:'/',
@@ -20,6 +21,11 @@ const router = new VueRouter({
         {//前台路由配置
             path:'/setting',
             component:Setting
+
+        },
+        {//前台路由配置
+            path:'/server',
+            component:Server
 
         }
     ]
