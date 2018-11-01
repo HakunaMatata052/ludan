@@ -3,7 +3,7 @@
 		<el-container style="height: 100%;">
 			<el-container style="overflow: auto;">
 				<el-header>
-					<div style="float: right;font-size: 20px;">						
+					<div style="float: right;font-size: 20px;">
 						<i class="el-icon-upload" @click="server"></i></a>
 						<a href="/"><i class="el-icon-tickets"></i></a>
 						<i class="el-icon-refresh" @click="showData()"></i>
@@ -44,37 +44,27 @@
 				</el-header>
 				<el-main :id="'main'">
 					<el-row :gutter="20">
-						<el-col :span="8">
-							<el-input placeholder="请输入内容" v-model="search.company" clearable>
-								<template slot="prepend">分公司：</template>
-							</el-input>
-						</el-col>
-						<el-col :span="8">
+						<el-col :span="12">
 							<el-input placeholder="请输入内容" v-model="search.business" clearable>
-								<template slot="prepend">商务代表：</template>
+								<template slot="prepend">商务：</template>
 							</el-input>
 						</el-col>
-						<el-col :span="8">
+						<el-col :span="12">
 							<el-input placeholder="请输入内容" v-model="search.manager" clearable>
-								<template slot="prepend">商务经理：</template>
+								<template slot="prepend">总监：</template>
 							</el-input>
 						</el-col>
 					</el-row>
 
 					<el-row :gutter="20">
-						<el-col :span="8">
+						<el-col :span="12">
 							<el-input placeholder="请输入内容" v-model="search.customer" clearable>
 								<template slot="prepend">客户名称：</template>
 							</el-input>
 						</el-col>
-						<el-col :span="8">
+						<el-col :span="12">
 							<el-input placeholder="请输入内容" v-model="search.domains" clearable>
 								<template slot="prepend">域名：</template>
-							</el-input>
-						</el-col>
-						<el-col :span="8">
-							<el-input placeholder="请输入内容" v-model="search.designer" clearable>
-								<template slot="prepend">设计：</template>
 							</el-input>
 						</el-col>
 					</el-row>
@@ -91,7 +81,7 @@
 							<el-button type="primary" icon="el-icon-tickets" size="mini" @click="exportExcel" circle></el-button>
 						</el-col>
 					</el-row>
-					<el-table :data="add" :show-header="false" border style="width: 100%;">
+					<el-table :data="add" :show-header="false" border style="width: 100%;" row-class-name="success-row">
 						<el-table-column sortable prop="company" label="分公司" min-width="60">
 							<template slot-scope="scope">
 								<el-autocomplete v-model="add[0].company" placeholder="分公司"></el-autocomplete>
@@ -156,15 +146,16 @@
 						</el-table-column>
 					</el-table>
 					<el-table :data="list" stripe border style="width: 100%;" v-loading="loading">
-						<el-table-column sortable prop="company" label="分公司" min-width="60">
+						<el-table-column type="index" width="50"></el-table-column>
+						<el-table-column sortable prop="company" label="分公司" min-width="60" show-overflow-tooltip>
 						</el-table-column>
 
-						<el-table-column sortable prop="customer" label="客户名称" min-width="100">
+						<el-table-column sortable prop="customer" label="客户名称" min-width="100" show-overflow-tooltip>
 						</el-table-column>
-						<el-table-column sortable prop="domains" label="域名" min-width="120">
+						<el-table-column sortable prop="domains" label="域名" min-width="120" show-overflow-tooltip>
 						</el-table-column>
 
-						<el-table-column sortable prop="reason" label="关闭原因" min-width="130">
+						<el-table-column sortable prop="reason" label="关闭原因" min-width="130" show-overflow-tooltip>
 							<template slot-scope="scope">
 								<el-popover trigger="hover" placement="bottom">
 									{{scope.row.reason}}
@@ -175,21 +166,21 @@
 							</template>
 						</el-table-column>
 
-						<el-table-column sortable prop="qdate" label="关闭时间" min-width="60">
+						<el-table-column sortable prop="qdate" label="关闭时间" min-width="60" show-overflow-tooltip>
 						</el-table-column>
-						<el-table-column sortable prop="xdate" label="开放时间" min-width="60">
+						<el-table-column sortable prop="xdate" label="开放时间" min-width="60" show-overflow-tooltip>
 						</el-table-column>
-						<el-table-column sortable prop="ip" label="IP" min-width="80">
+						<el-table-column sortable prop="ip" label="IP" min-width="60" show-overflow-tooltip>
 						</el-table-column>
-						<el-table-column sortable prop="kefu" label="客服" min-width="60">
-						</el-table-column>
-
-						<el-table-column sortable prop="business" label="商务" min-width="60">
+						<el-table-column sortable prop="kefu" label="客服" min-width="60" show-overflow-tooltip>
 						</el-table-column>
 
-						<el-table-column sortable prop="manager" label="总监" min-width="60">
+						<el-table-column sortable prop="business" label="商务" min-width="60" show-overflow-tooltip>
 						</el-table-column>
-						<el-table-column sortable prop="remarks" label="备注" min-width="130">
+
+						<el-table-column sortable prop="manager" label="总监" min-width="60" show-overflow-tooltip>
+						</el-table-column>
+						<el-table-column sortable prop="remarks" label="备注" min-width="130" show-overflow-tooltip>
 							<template slot-scope="scope">
 								<el-popover trigger="hover" placement="bottom">
 									{{scope.row.remarks}}
@@ -223,10 +214,10 @@
 							</el-form-item>
 
 							<el-form-item label="关闭日期" label-width="120px">
-								<el-input v-model="editform.qdate" maxlength="30" auto-complete="off"></el-input>
+								<el-input v-model="editform.qdate" maxlength="30" auto-complete="off"  @focus="today('qdate',editform)"></el-input>
 							</el-form-item>
 							<el-form-item label="开放日期" label-width="120px">
-								<el-input v-model="editform.xdate" maxlength="30" auto-complete="off"></el-input>
+								<el-input v-model="editform.xdate" maxlength="30" auto-complete="off"  @focus="today('xdate',editform)"></el-input>
 							</el-form-item>
 
 							<el-form-item label="IP" label-width="120px">
@@ -299,6 +290,19 @@
 			}
 		},
 		methods: {
+			today: function(typename, row) {
+				var that = this;
+				if(row[typename] == undefined || row[typename].length == '') {
+					var Today = new Date()
+					var year = Today.getYear();
+					year = year < 2000 ? year + 1900 : year
+					year = year.toString().substr(2, 2);
+					var month = Today.getMonth() + 1;
+					var day = Today.getDate();
+					row[typename] = year + '.' + month + '.' + day; //修改data中的数据（不会更新视图）
+				}
+
+			},
 			exportExcel() { //生成导出excel表格的数据
 				var newdata = [];
 				for(var i = this.list.length - 1; i >= 0; i--) {
@@ -539,11 +543,7 @@
 					cancelButtonText: '取消',
 					type: 'warning'
 				}).then(() => {
-					that.$http.post(that.editapi, {
-						params: {
-							'action': 'update'
-						}
-					}, editJosn).then(function(res) {
+					that.$http.post(that.editapi + '?action=update', editJosn).then(function(res) {
 						that.list = res.data.data;
 						that.dialogFormVisible = false;
 						that.$message({

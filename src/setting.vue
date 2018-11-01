@@ -45,9 +45,9 @@
 		methods:{
 			submit(){
 				var that = this;
-				that.$cookie.set('togglebody',that.quanping,'Tue, 19 Jan 2038 03:14:07 GMT');				
-				that.$cookie.set('stat_edit',that.stat_edit,'Tue, 19 Jan 2038 03:14:07 GMT');							
-				that.$cookie.set('isA',that.isA,'Tue, 19 Jan 2038 03:14:07 GMT');
+				localStorage.togglebody = that.quanping;
+				localStorage.stat_edit = that.stat_edit;
+				localStorage.isA = that.isA;
 				that.$router.push({
 						path: '/'
 				})
@@ -55,9 +55,9 @@
 		},
 		mounted(){
 			var that = this;
-			that.quanping = that.$cookie.get('togglebody');
-			that.stat_edit = that.$cookie.get('stat_edit');	
-			that.isA = that.$cookie.get('isA');
+			that.quanping = localStorage.togglebody
+			that.stat_edit = localStorage.stat_edit
+			that.isA = localStorage.isA
 		}
 	}
 </script>

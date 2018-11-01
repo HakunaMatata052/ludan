@@ -6,7 +6,7 @@
 					<el-submenu index="1">
 						<template slot="title"><i class="el-icon-message"></i>各类型单量统计</template>
 						<el-menu-item-group>
-							<el-menu-item index="1-1" v-for="item in statistics.type" @click="shaixuan('type',item.name)">{{item.name}}
+							<el-menu-item index="1-1" v-for="item in statistics.type" :key="item.id" @click="shaixuan('type',item.name)">{{item.name}}
 								<el-badge class="mark" :value="item.value" />
 							</el-menu-item>
 
@@ -19,7 +19,7 @@
 						<template slot="title"><i class="el-icon-message"></i>各公司单量统计</template>
 						<el-menu-item-group>
 
-							<el-menu-item index="2-1" v-for="item in statistics.company" @click="shaixuan('company',item.name)">{{item.name}}
+							<el-menu-item index="2-1" v-for="item in statistics.company" :key="item.id" @click="shaixuan('company',item.name)">{{item.name}}
 								<el-badge class="mark" :value="item.value" />
 							</el-menu-item>
 
@@ -30,7 +30,7 @@
 						<template slot="title"><i class="el-icon-message"></i>技术下单统计</template>
 						<el-menu-item-group>
 
-							<el-menu-item index="3-1" v-for="item in statistics.artisan" @click="shaixuan('designer',item.name)">{{item.name}}
+							<el-menu-item index="3-1" v-for="item in statistics.artisan" :key="item.id" @click="shaixuan('designer',item.name)">{{item.name}}
 								<el-badge class="mark" :value="item.value" />
 							</el-menu-item>
 
@@ -212,7 +212,7 @@
 						<el-table-column sortable prop="programmer" label="程序" min-width="75">
 							<template slot-scope="scope">
 								<el-select v-model="add[0].programmer" placeholder="程序猿">
-									<el-option v-for="item in programmer" :key="item.value" :label="item.label" :value="item.value">
+									<el-option v-for="item in programmer" :key="item.id" :label="item.label" :value="item.value">
 									</el-option>
 								</el-select>
 							</template>
@@ -244,61 +244,55 @@
 						</el-table-column>
 					</el-table>
 					<el-table :data="viewlist" stripe border style="width: 100%;" v-bind:class='isA=="open"?"huyan":""' v-loading="loading">
-						<el-table-column sortable prop="company" label="分公司" min-width="60">
+						<el-table-column sortable prop="company" label="分公司" min-width="60" show-overflow-tooltip>
 						</el-table-column>
-						<el-table-column sortable prop="business" label="商务代表" min-width="60">
+						<el-table-column sortable prop="business" label="商务代表" min-width="60" show-overflow-tooltip>
 						</el-table-column>
-						<el-table-column sortable prop="manager" label="商务经理" min-width="60">
+						<el-table-column sortable prop="manager" label="商务经理" min-width="60" show-overflow-tooltip>
 						</el-table-column>
-						<el-table-column sortable prop="customer" label="客户名称" min-width="100">
+						<el-table-column sortable prop="customer" label="客户名称" min-width="100" show-overflow-tooltip>
 						</el-table-column>
-						<el-table-column sortable prop="domains" label="域名" min-width="120">
+						<el-table-column sortable prop="domains" label="域名" min-width="120" show-overflow-tooltip>
 						</el-table-column>
-						<el-table-column sortable prop="qdate" label="签单日期" min-width="60">
+						<el-table-column sortable prop="qdate" label="签单日期" min-width="60" show-overflow-tooltip>
 						</el-table-column>
-						<el-table-column sortable prop="xdate" label="下单日期" min-width="60">
+						<el-table-column sortable prop="xdate" label="下单日期" min-width="60" show-overflow-tooltip>
 						</el-table-column>
-						<el-table-column sortable prop="type" label="类别" min-width="80">
+						<el-table-column sortable prop="type" label="类别" min-width="80" show-overflow-tooltip>
 						</el-table-column>
-						<el-table-column sortable prop="year" label="年限" min-width="60">
+						<el-table-column sortable prop="year" label="年限" min-width="60" show-overflow-tooltip>
 						</el-table-column>
-						<el-table-column sortable prop="qmoney" label="签单金额" min-width="80">
+						<el-table-column sortable prop="qmoney" label="签单金额" min-width="80" show-overflow-tooltip>
 						</el-table-column>
-						<el-table-column sortable prop="smoney" label="实到" min-width="60">
+						<el-table-column sortable prop="smoney" label="实到" min-width="60" show-overflow-tooltip>
 						</el-table-column>
-						<el-table-column sortable prop="remarks" label="备注" min-width="130">
+						<el-table-column sortable prop="remarks" label="备注" min-width="130" show-overflow-tooltip>
 							<template slot-scope="scope">
-								<el-popover trigger="hover" placement="bottom" v-if="scope.row.remarks.length!=0">
-									{{scope.row.remarks}}
-									<div slot="reference" class="name-wrapper">
 										<el-tag type="danger" size="medium" v-if="scope.row.remarks.indexOf('加急')>=0">{{scope.row.remarks}}</el-tag>
 										<el-tag type="success" size="medium" v-else-if="scope.row.company=='代理商'">{{scope.row.remarks}}</el-tag>
 										<el-tag size="medium" v-else-if="scope.row.remarks.indexOf('策划')>=0">{{scope.row.remarks}}</el-tag>
 										<template v-else>
 											{{scope.row.remarks}}
 										</template>
-
-									</div>
-								</el-popover>
 							</template>
 						</el-table-column>
-						<el-table-column sortable prop="designer" label="设计师" min-width="75">
+						<el-table-column sortable prop="designer" label="设计师" min-width="75" show-overflow-tooltip>
 							<template slot-scope="scope">
 								<div @dblclick="noticefn(scope.row.designer,scope.row)" class="btn" data-clipboard-target="#noticeCon">{{scope.row.designer}}</div>
 							</template>
 						</el-table-column>
-						<el-table-column sortable prop="programmer" label="程序" min-width="75">
+						<el-table-column sortable prop="programmer" label="程序" min-width="75" show-overflow-tooltip>
 							<template slot-scope="scope">
 								<div @dblclick="noticefn(scope.row.programmer,scope.row)" class="btn" data-clipboard-target="#noticeCon">{{scope.row.programmer}}</div>
 							</template>
 						</el-table-column>
-						<el-table-column sortable prop="workload" label="工作量" min-width="60">
+						<el-table-column sortable prop="workload" label="工作量" min-width="60" show-overflow-tooltip>
 						</el-table-column>
-						<el-table-column sortable prop="home" label="首页认可" min-width="70">
+						<el-table-column sortable prop="home" label="首页认可" min-width="70" show-overflow-tooltip>
 						</el-table-column>
-						<el-table-column sortable prop="program" label="程序认可" min-width="70">
+						<el-table-column sortable prop="program" label="程序认可" min-width="70" show-overflow-tooltip>
 						</el-table-column>
-						<el-table-column sortable prop="online" label="上线日期" min-width="70">
+						<el-table-column sortable prop="online" label="上线日期" min-width="70" show-overflow-tooltip>
 						</el-table-column>
 						<el-table-column sortable label="操作" width="140" fixed="right" v-if="stat_edit=='open'">
 							<template slot-scope="scope">
@@ -313,39 +307,39 @@
 					<el-dialog title="编辑" :visible.sync="dialogFormVisible">
 						<el-form :model="editform">
 							<el-form-item label="分公司" label-width="120px">
-								<el-autocomplete v-model="editform.company" maxlength="5" :fetch-suggestions="queryCompany"></el-autocomplete>
+								<el-autocomplete v-model="editform.company" :maxlength="5" :fetch-suggestions="queryCompany"></el-autocomplete>
 							</el-form-item>
 							<el-form-item label="商务代表" label-width="120px">
-								<el-autocomplete v-model="editform.business" maxlength="15" :fetch-suggestions="querySwdb"></el-autocomplete>
+								<el-autocomplete v-model="editform.business" :maxlength="15" :fetch-suggestions="querySwdb"></el-autocomplete>
 							</el-form-item>
 							<el-form-item label="商务经理" label-width="120px">
-								<el-autocomplete v-model="editform.manager" maxlength="15" :fetch-suggestions="querySwjl"></el-autocomplete>
+								<el-autocomplete v-model="editform.manager" :maxlength="15" :fetch-suggestions="querySwjl"></el-autocomplete>
 							</el-form-item>
 							<el-form-item label="客户名称" label-width="120px">
-								<el-input v-model="editform.customer" maxlength="70"></el-input>
+								<el-input v-model="editform.customer" :maxlength="70"></el-input>
 							</el-form-item>
 							<el-form-item label="域名" label-width="120px">
-								<el-input v-model="editform.domains" maxlength="40"></el-input>
+								<el-input v-model="editform.domains" :maxlength="40"></el-input>
 							</el-form-item>
 							<el-form-item label="签单日期" label-width="120px">
-								<el-input v-model="editform.qdate" maxlength="30" auto-complete="off"></el-input>
+								<el-input v-model="editform.qdate" :maxlength="30" auto-complete="off"></el-input>
 							</el-form-item>
 							<el-form-item label="下单日期" label-width="120px">
-								<el-input v-model="editform.xdate" maxlength="30" auto-complete="off"></el-input>
+								<el-input v-model="editform.xdate" :maxlength="30" auto-complete="off"></el-input>
 							</el-form-item>
 							<el-form-item label="类别" label-width="120px">
 								<el-select v-model="editform.type" placeholder="WJDH双模">
-									<el-option v-for="item in typeList" :label="item" :value="item"></el-option>
+									<el-option v-for="item in typeList" :key="item.id" :label="item" :value="item"></el-option>
 								</el-select>
 							</el-form-item>
 							<el-form-item label="年限" label-width="120px">
-								<el-input v-model="editform.year" maxlength="20" auto-complete="off"></el-input>
+								<el-input v-model="editform.year" :maxlength="20" auto-complete="off"></el-input>
 							</el-form-item>
 							<el-form-item label="签单金额" label-width="120px">
-								<el-input v-model="editform.qmoney" maxlength="20" auto-complete="off"></el-input>
+								<el-input v-model="editform.qmoney" :maxlength="20" auto-complete="off"></el-input>
 							</el-form-item>
 							<el-form-item label="实到" label-width="120px">
-								<el-input v-model="editform.smoney" maxlength="20" auto-complete="off"></el-input>
+								<el-input v-model="editform.smoney" :maxlength="20" auto-complete="off"></el-input>
 							</el-form-item>
 							<el-form-item label="备注" label-width="120px">
 								<el-input v-model="editform.remarks" auto-complete="off"></el-input>
@@ -364,137 +358,35 @@
 								</el-select>
 							</el-form-item>
 							<el-form-item label="工作量" label-width="120px">
-								<el-input v-model="editform.workload" maxlength="50" auto-complete="off"></el-input>
+								<el-input v-model="editform.workload" :maxlength="50" auto-complete="off"></el-input>
 							</el-form-item>
 							<el-form-item label="首页认可" label-width="120px">
-								<el-input v-model="editform.home" maxlength="20" auto-complete="off" @focus="today('home',editform)"></el-input>
+								<el-input v-model="editform.home" :maxlength="20" auto-complete="off" @focus="today('home',editform)"></el-input>
 							</el-form-item>
 							<el-form-item label="程序认可" label-width="120px">
-								<el-input v-model="editform.program" maxlength="20" auto-complete="off"></el-input>
+								<el-input v-model="editform.program" :maxlength="20" auto-complete="off"></el-input>
 							</el-form-item>
 							<el-form-item label="上线日期" label-width="120px">
-								<el-input v-model="editform.online" maxlength="20" auto-complete="off" @focus="today('online',editform)"></el-input>
+								<el-input v-model="editform.online" :maxlength="20" auto-complete="off" @focus="today('online',editform)"></el-input>
+							</el-form-item>
+
+							<el-form-item label="上传附件" label-width="120px">
+								<el-upload class="upload-demo" drag :action="'apis/uploadfile/?id='+editform.id" multiple :on-success="uploadsSuccess" :on-error="uploadsError">
+									<i class="el-icon-upload"></i>
+									<div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+								</el-upload>
+							</el-form-item>
+							<el-form-item label="图片附件" label-width="120px" v-if="editform.imgurl!=null">
+								<img :src="editform.imgurl" style="width: 100%;height:auto" >
 							</el-form-item>
 
 						</el-form>
 						<div slot="footer" class="dialog-footer">
 							<el-button @click="dialogFormVisible = false">取 消</el-button>
-							<el-button type="primary" @click="submitedit">确 定</el-button>
+							<el-button type="primary" @click="submitedit(0)">确 定</el-button>
+							<el-button type="primary" @click="submitedit">修改不刷新</el-button>
 						</div>
 					</el-dialog>
-					<!--<el-table :data="list" stripe border style="width: 100%;" v-bind:class='isA=="open"?"huyan":""' v-loading="loading"  v-if="close">
-						<el-table-column sortable prop="company" label="分公司" min-width="60">
-							<template slot-scope="scope">
-								<el-input v-model="scope.row.company" v-bind:disabled="stat_edit=='close'"></el-input>
-							</template>
-						</el-table-column>
-						<el-table-column sortable prop="business" label="商务代表" min-width="60">
-							<template slot-scope="scope">
-								<el-input v-model="scope.row.business" v-bind:disabled="stat_edit=='close'"></el-input>
-							</template>
-						</el-table-column>
-						<el-table-column sortable prop="manager" label="商务经理" min-width="60">
-							<template slot-scope="scope">
-								<el-input v-model="scope.row.manager" v-bind:disabled="stat_edit=='close'"></el-input>
-							</template>
-						</el-table-column>
-						<el-table-column sortable prop="customer" label="客户名称" min-width="100">
-							<template slot-scope="scope">
-								<el-input v-model="scope.row.customer" v-bind:disabled="stat_edit=='close'"></el-input>
-							</template>
-						</el-table-column>
-						<el-table-column sortable prop="domains" label="域名" min-width="90">
-							<template slot-scope="scope">
-								<el-input v-model="scope.row.domains" v-bind:disabled="stat_edit=='close'"></el-input>
-							</template>
-						</el-table-column>
-						<el-table-column sortable prop="qdate" label="签单日期" min-width="60">
-							<template slot-scope="scope">
-								<el-input v-model="scope.row.qdate" v-bind:disabled="stat_edit=='close'"></el-input>
-							</template>
-						</el-table-column>
-						<el-table-column sortable prop="xdate" label="下单日期" min-width="60">
-							<template slot-scope="scope">
-								<el-input v-model="scope.row.xdate" v-bind:disabled="stat_edit=='close'"></el-input>
-							</template>
-						</el-table-column>
-						<el-table-column sortable prop="type" label="类别" min-width="80">
-							<template slot-scope="scope">
-								<el-select v-model="scope.row.type" placeholder="请选择" v-bind:disabled="stat_edit=='close'">
-									<el-option v-for="item in typeList" :key="item" :label="item.label" :value="item">
-									</el-option>
-								</el-select>
-							</template>
-						</el-table-column>
-						<el-table-column sortable prop="year" label="年限" min-width="60">
-							<template slot-scope="scope">
-								<el-input v-model="scope.row.year" v-bind:disabled="stat_edit=='close'"></el-input>
-							</template>
-						</el-table-column>
-						<el-table-column sortable prop="qmoney" label="签单金额" min-width="80">
-							<template slot-scope="scope">
-								<el-input v-model="scope.row.qmoney" v-bind:disabled="stat_edit=='close'"></el-input>
-							</template>
-						</el-table-column>
-						<el-table-column sortable prop="smoney" label="实到" min-width="60">
-							<template slot-scope="scope">
-								<el-input v-model="scope.row.smoney" v-bind:disabled="stat_edit=='close'"></el-input>
-							</template>
-						</el-table-column>
-						<el-table-column sortable prop="remarks" label="备注" min-width="130">
-							<template slot-scope="scope">
-								<el-popover trigger="hover" placement="top">
-									<p>{{ scope.row.remarks }}</p>
-									<div slot="reference" class="name-wrapper">
-										<el-input v-model="scope.row.remarks" v-bind:disabled="stat_edit=='close'"></el-input>
-									</div>
-								</el-popover>
-							</template>
-						</el-table-column>
-						<el-table-column sortable prop="designer" label="设计师" min-width="75" :filters="designer" :filter-method="filter">
-							<template slot-scope="scope">
-								<el-select v-model="scope.row.designer" placeholder="请选择" v-bind:disabled="stat_edit=='close'">
-									<el-option v-for="item in designer" :key="item.value" :label="item.value" :value="item.value">
-									</el-option>
-								</el-select>
-							</template>
-						</el-table-column>
-						<el-table-column sortable prop="programmer" label="程序" min-width="75" :filters="programmer" :filter-method="filter">
-							<template slot-scope="scope">
-								<el-select v-model="scope.row.programmer" placeholder="请选择" v-bind:disabled="stat_edit=='close'">
-									<el-option v-for="item in programmer" :key="item.value" :label="item.value" :value="item.value">
-									</el-option>
-								</el-select>
-							</template>
-						</el-table-column>
-						<el-table-column sortable prop="workload" label="工作量" min-width="60">
-							<template slot-scope="scope">
-								<el-input v-model="scope.row.workload" v-bind:disabled="stat_edit=='close'"></el-input>
-							</template>
-						</el-table-column>
-						<el-table-column sortable prop="home" label="首页认可" min-width="70">
-							<template slot-scope="scope">
-								<el-input v-model="scope.row.home" @focus="today('home',scope.row)" v-bind:disabled="stat_edit=='close'"></el-input>
-							</template>
-						</el-table-column>
-						<el-table-column sortable prop="program" label="程序认可" min-width="70">
-							<template slot-scope="scope">
-								<el-input v-model="scope.row.program" v-bind:disabled="stat_edit=='close'"></el-input>
-							</template>
-						</el-table-column>
-						<el-table-column sortable prop="online" label="上线日期" min-width="70">
-							<template slot-scope="scope">
-								<el-input v-model="scope.row.online" @focus="today('online',scope.row)" v-bind:disabled="stat_edit=='close'"></el-input>
-							</template>
-						</el-table-column>
-						<el-table-column sortable label="操作" width="140" fixed="right" v-if="stat_edit=='open'">
-							<template slot-scope="scope">
-								<el-button size="mini" type="primary" @click="editFn(scope.row)">编辑</el-button>
-								<el-button size="mini" type="danger" @click="deleteFn(scope.row)">删除</el-button>
-							</template>
-						</el-table-column>
-					</el-table>-->
-
 				</el-main>
 			</el-container>
 		</el-container>
@@ -709,6 +601,16 @@
 			}
 		},
 		methods: {
+			uploadsSuccess(data) {
+				console.log(data)
+				this.editform.imgurl = data.data;
+			},
+			uploadsError() {
+				this.$message({
+					type: 'error',
+					message: res.data.msg
+				});
+			},
 			shaixuan(item, value) { //左侧筛选
 				var that = this;
 				var newlist = [];
@@ -958,6 +860,8 @@
 				that.$http.get(getUrl).then(function(res) {
 					if(res.data.code == 0) {
 						that.list = res.data.data;
+
+						that.viewlist = res.data.data;
 						that.statistics = res.data.statistics;
 						that.temlist = res.data.data;
 						that.tongji();
@@ -984,6 +888,9 @@
 					that.$http.post(that.listapi + '?action=search', searchJson).then(function(res) {
 						if(res.data.code == 0) {
 							that.list = res.data.data;
+
+							that.viewlist = res.data.data;
+							that.statistics = res.data.statistics;
 							that.tongji();
 							that.loading = false;
 						} else {
@@ -1021,6 +928,7 @@
 			addFn: function() {
 				var that = this;
 				var addJson = that.add[0];
+				if(that.add[0].remarks != null) that.add[0].remarks = that.add[0].remarks.replace('、', '/');
 				addJson.username = that.username;
 				if(addJson.designer != undefined) {
 					that.$confirm('确认添加？？', '提示', {
@@ -1067,7 +975,7 @@
 				that.dialogFormVisible = true;
 				that.editform = row;
 			},
-			submitedit: function() {
+			submitedit: function(state) {
 				var that = this;
 				var editJosn = that.editform;
 				editJosn.username = that.username;
@@ -1078,8 +986,11 @@
 				}).then(() => {
 					that.$http.post(that.editapi + '?action=update', editJosn).then(function(res) {
 						if(res.data.code == "0") {
-							that.list = res.data.data;
-							that.viewlist = res.data.data;
+							if(state == 0) {
+								that.list = res.data.data;
+								that.viewlist = res.data.data;
+							}
+
 							that.statistics = res.data.statistics;
 							that.dialogFormVisible = false;
 							that.$message({
@@ -1326,19 +1237,20 @@
 		mounted: function() {
 			var that = this;
 			//document.getElementById("main").addEventListener('scroll', this.handleScroll);    //下拉执行 this.handleScroll
-			if(that.$cookie.get('stat_edit') != undefined) {
-				that.stat_edit = that.$cookie.get('stat_edit');
+			if(localStorage.stat_edit != undefined) {
+				that.stat_edit = localStorage.stat_edit
 			}
-			if(that.$cookie.get('togglebody') != undefined) {
-				that.togglebody = that.$cookie.get('togglebody');
+			if(localStorage.togglebody != undefined) {
+				that.togglebody = localStorage.togglebody;
 			}
-			if(that.$cookie.get('isA') != undefined) {
-				that.isA = that.$cookie.get('isA');
+			if(localStorage.isA != undefined) {
+				that.isA = localStorage.isA
 			}
 			that.$http.get(that.listapi + '?action=home').then(function(res) {
 				if(res.data.code == 0) {
 					that.login = 1;
 					that.list = res.data.data;
+					that.viewlist = res.data.data;
 					that.statistics = res.data.statistics;
 					that.temlist = res.data.data;
 					if(res.data.data.length == 0) {
