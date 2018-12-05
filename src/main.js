@@ -13,10 +13,10 @@ Vue.use(VueRouter)
 Vue.use(vueResource);
 Vue.use(VueCookie);
 Vue.config.debug = false;
-Vue.http.options.emulateJSON = true;
-Vue.http.options.headers = {
-  'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
-};
+//Vue.http.options.emulateJSON = true;
+//Vue.http.options.headers = {
+//'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+//};
 const vue = new Vue({
   router,
   render: h => h(Home)

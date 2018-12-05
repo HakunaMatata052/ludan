@@ -29,11 +29,9 @@
 					<el-submenu index="3">
 						<template slot="title"><i class="el-icon-message"></i>技术下单统计</template>
 						<el-menu-item-group>
-
 							<el-menu-item index="3-1" v-for="item in statistics.artisan" :key="item.id" @click="shaixuan('designer',item.name)">{{item.name}}
 								<el-badge class="mark" :value="item.value" />
 							</el-menu-item>
-
 						</el-menu-item-group>
 					</el-submenu>
 				</el-menu>
@@ -124,12 +122,13 @@
 						</el-col>
 					</el-row>
 					<el-row :gutter="20">
-						<el-col :span="2">
+						<el-col :span="3">
 							<el-button type="primary" icon="el-icon-view" size="mini" @click='toggle' circle></el-button>
 							<el-button type="primary" icon="el-icon-edit" size="mini" @click="opcl_edit" circle></el-button>
 							<el-button type="primary" icon="el-icon-tickets" size="mini" @click="dls_edit" circle></el-button>
+							<el-button type="primary" icon="el-icon-refresh" size="mini" @click="refresh" circle v-show="username=='罗彬'"></el-button>
 						</el-col>
-						<el-col :span="2" :offset="20" style="text-align: right;">
+						<el-col :span="2" :offset="19" style="text-align: right;">
 							<el-button type="primary" icon="el-icon-tickets" size="mini" @click="exportExcel" circle></el-button>
 						</el-col>
 					</el-row>
@@ -268,12 +267,12 @@
 						</el-table-column>
 						<el-table-column sortable prop="remarks" label="备注" min-width="130" show-overflow-tooltip>
 							<template slot-scope="scope">
-										<el-tag type="danger" size="medium" v-if="scope.row.remarks.indexOf('加急')>=0">{{scope.row.remarks}}</el-tag>
-										<el-tag type="success" size="medium" v-else-if="scope.row.company=='代理商'">{{scope.row.remarks}}</el-tag>
-										<el-tag size="medium" v-else-if="scope.row.remarks.indexOf('策划')>=0">{{scope.row.remarks}}</el-tag>
-										<template v-else>
-											{{scope.row.remarks}}
-										</template>
+								<el-tag type="danger" size="medium" v-if="scope.row.remarks.indexOf('加急')>=0">{{scope.row.remarks}}</el-tag>
+								<el-tag type="success" size="medium" v-else-if="scope.row.company=='代理商'">{{scope.row.remarks}}</el-tag>
+								<el-tag size="medium" v-else-if="scope.row.remarks.indexOf('策划')>=0">{{scope.row.remarks}}</el-tag>
+								<template v-else>
+									{{scope.row.remarks}}
+								</template>
 							</template>
 						</el-table-column>
 						<el-table-column sortable prop="designer" label="设计师" min-width="75" show-overflow-tooltip>
@@ -354,7 +353,7 @@
 							</el-form-item>
 							<el-form-item label="程序" label-width="120px">
 								<el-select v-model="editform.programmer" placeholder="程序猿">
-									<el-option v-for="item in programmer" :label="item.text" :value="item.text"></el-option>
+									<el-option v-for="item in programmer" :key="item.id" :label="item.text" :value="item.text"></el-option>
 								</el-select>
 							</el-form-item>
 							<el-form-item label="工作量" label-width="120px">
@@ -377,7 +376,7 @@
 								</el-upload>
 							</el-form-item>
 							<el-form-item label="图片附件" label-width="120px" v-if="editform.imgurl!=null">
-								<img :src="editform.imgurl" style="width: 100%;height:auto" >
+								<img :src="editform.imgurl" style="width: 100%;height:auto">
 							</el-form-item>
 
 						</el-form>
@@ -885,7 +884,12 @@
 				var searchJson = that.search;
 				if(JSON.stringify(searchJson) != "{}") {
 					console.log(searchJson)
-					that.$http.post(that.listapi + '?action=search', searchJson).then(function(res) {
+					that.$http.post(that.listapi + '?action=search', searchJson,{
+					headers:{
+					'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+					},
+					emulateJSON :true
+				}).then(function(res) {
 						if(res.data.code == 0) {
 							that.list = res.data.data;
 
@@ -936,7 +940,12 @@
 						cancelButtonText: '取消',
 						type: 'warning'
 					}).then(() => {
-						that.$http.post(that.editapi + '?action=add', addJson).then(function(res) {
+						that.$http.post(that.editapi + '?action=add', addJson,{
+					headers:{
+					'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+					},
+					emulateJSON :true
+				}).then(function(res) {
 								that.list = res.data.data;
 								that.viewlist = res.data.data;
 								that.statistics = res.data.statistics;
@@ -984,7 +993,12 @@
 					cancelButtonText: '取消',
 					type: 'warning'
 				}).then(() => {
-					that.$http.post(that.editapi + '?action=update', editJosn).then(function(res) {
+					that.$http.post(that.editapi + '?action=update', editJosn,{
+					headers:{
+					'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+					},
+					emulateJSON :true
+				}).then(function(res) {
 						if(res.data.code == "0") {
 							if(state == 0) {
 								that.list = res.data.data;
@@ -1027,7 +1041,12 @@
 					cancelButtonText: '取消',
 					type: 'warning'
 				}).then(() => {
-					that.$http.post(that.editapi + '?action=del', deleteJosn).then(function(res) {
+					that.$http.post(that.editapi + '?action=del', deleteJosn,{
+					headers:{
+					'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+					},
+					emulateJSON :true
+				}).then(function(res) {
 						that.list = res.data.data;
 						that.viewlist = res.data.data;
 						that.statistics = res.data.statistics;
@@ -1232,6 +1251,19 @@
 				this.$router.push({
 					path: '/setting'
 				})
+			},
+			refresh() {
+				var that = this;
+				console.log(that.list)
+				var sjson = {};
+				sjson.data = that.list;
+				sjson.date = that.cxDate;
+				console.log(sjson)
+				that.$http.post('http://192.168.0.253/refresh/index.php', sjson).then(function(res) {
+					console.log(res)
+				}, function(res) {
+
+				});
 			}
 		},
 		mounted: function() {

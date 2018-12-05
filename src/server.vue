@@ -82,9 +82,18 @@
 						</el-col>
 					</el-row>
 					<el-table :data="add" :show-header="false" border style="width: 100%;" row-class-name="success-row">
-						<el-table-column sortable prop="company" label="分公司" min-width="60">
+						<el-table-column sortable prop="company" label="分公司" width="110">
 							<template slot-scope="scope">
-								<el-autocomplete v-model="add[0].company" placeholder="分公司"></el-autocomplete>
+								<el-select v-model="add[0].company" placeholder="请选择">
+									<el-option label="西安" value="西安">
+									</el-option>
+									<el-option label="成都" value="成都">
+									</el-option>
+									<el-option label="郑州" value="郑州">
+									</el-option>									
+									<el-option label="武汉" value="武汉">
+									</el-option>
+								</el-select>
 							</template>
 						</el-table-column>
 						<el-table-column sortable prop="customer" label="客户名称" min-width="100">
@@ -98,14 +107,24 @@
 							</template>
 						</el-table-column>
 
-						<el-table-column sortable prop="reason" label="关闭原因" min-width="130">
+						<el-table-column sortable prop="reason" label="关闭原因" min-width="80">
 							<template slot-scope="scope">
-								<el-input v-model="add[0].reason" placeholder="关闭原因"></el-input>
+								<el-select v-model="add[0].reason" placeholder="请选择" @change="selectinputfn"  v-if="selectinput == false">
+									<el-option label="到期" value="到期">
+									</el-option>
+									<el-option label="尾款" value="尾款">
+									</el-option>
+									<el-option label="备案" value="备案">
+									</el-option>									
+									<el-option label="自定义" value="自定义">
+									</el-option>
+								</el-select>
+								<el-input v-model="add[0].reason" value="" placeholder="自定义" v-if="selectinput == true" @blur="selectinput=false"></el-input>
 							</template>
 						</el-table-column>
 						<el-table-column sortable prop="qdate" label="关闭时间" min-width="60">
 							<template slot-scope="scope">
-								<el-input v-model="add[0].qdate" placeholder="关闭时间"></el-input>
+								<el-input v-model="add[0].qdate" placeholder="关闭时间" @focus="today('qdate',add[0])"></el-input>
 							</template>
 						</el-table-column>
 						<el-table-column sortable prop="xdate" label="开放时间" min-width="60">
@@ -113,24 +132,24 @@
 								<el-input v-model="add[0].xdate" placeholder="开放时间"></el-input>
 							</template>
 						</el-table-column>
-						<el-table-column sortable prop="ip" label="IP" min-width="60">
+						<el-table-column sortable prop="ip" label="IP" min-width="80">
 							<template slot-scope="scope">
 								<el-input v-model="add[0].ip" placeholder="IP"></el-input>
 							</template>
 						</el-table-column>
-						<el-table-column sortable prop="kefu" label="客服" min-width="60">
+						<el-table-column sortable prop="kefu" label="客服" min-width="100">
 							<template slot-scope="scope">
 								<el-input v-model="add[0].kefu" placeholder="客服"></el-input>
 							</template>
 						</el-table-column>
 						<el-table-column sortable prop="business" label="商务" min-width="60">
 							<template slot-scope="scope">
-								<el-autocomplete v-model="add[0].business" placeholder="商务"></el-autocomplete>
+								<el-input v-model="add[0].business" placeholder="商务"></el-input>
 							</template>
 						</el-table-column>
 						<el-table-column sortable prop="manager" label="总监" min-width="60">
 							<template slot-scope="scope">
-								<el-autocomplete v-model="add[0].manager" placeholder="总监"></el-autocomplete>
+								<el-input v-model="add[0].manager" placeholder="总监"></el-input>
 							</template>
 						</el-table-column>
 						<el-table-column sortable prop="remarks" label="备注" min-width="130">
@@ -147,7 +166,7 @@
 					</el-table>
 					<el-table :data="list" stripe border style="width: 100%;" v-loading="loading">
 						<el-table-column type="index" width="50"></el-table-column>
-						<el-table-column sortable prop="company" label="分公司" min-width="60" show-overflow-tooltip>
+						<el-table-column sortable prop="company" label="分公司" width="60" show-overflow-tooltip>
 						</el-table-column>
 
 						<el-table-column sortable prop="customer" label="客户名称" min-width="100" show-overflow-tooltip>
@@ -155,24 +174,16 @@
 						<el-table-column sortable prop="domains" label="域名" min-width="120" show-overflow-tooltip>
 						</el-table-column>
 
-						<el-table-column sortable prop="reason" label="关闭原因" min-width="130" show-overflow-tooltip>
-							<template slot-scope="scope">
-								<el-popover trigger="hover" placement="bottom">
-									{{scope.row.reason}}
-									<div slot="reference" class="name-wrapper">
-										{{scope.row.reason}}
-									</div>
-								</el-popover>
-							</template>
+						<el-table-column sortable prop="reason" label="关闭原因" min-width="80" show-overflow-tooltip>
 						</el-table-column>
 
 						<el-table-column sortable prop="qdate" label="关闭时间" min-width="60" show-overflow-tooltip>
 						</el-table-column>
 						<el-table-column sortable prop="xdate" label="开放时间" min-width="60" show-overflow-tooltip>
 						</el-table-column>
-						<el-table-column sortable prop="ip" label="IP" min-width="60" show-overflow-tooltip>
+						<el-table-column sortable prop="ip" label="IP" min-width="80" show-overflow-tooltip>
 						</el-table-column>
-						<el-table-column sortable prop="kefu" label="客服" min-width="60" show-overflow-tooltip>
+						<el-table-column sortable prop="kefu" label="客服" min-width="100" show-overflow-tooltip>
 						</el-table-column>
 
 						<el-table-column sortable prop="business" label="商务" min-width="60" show-overflow-tooltip>
@@ -200,7 +211,7 @@
 					<el-dialog title="编辑" :visible.sync="dialogFormVisible">
 						<el-form :model="editform">
 							<el-form-item label="分公司" label-width="120px">
-								<el-autocomplete v-model="editform.company" maxlength="5"></el-autocomplete>
+								<el-input v-model="editform.company" placeholder="分公司"></el-input>
 							</el-form-item>
 							<el-form-item label="客户名称" label-width="120px">
 								<el-input v-model="editform.customer" maxlength="70"></el-input>
@@ -228,11 +239,11 @@
 								<el-input v-model="editform.kefu" maxlength="20" auto-complete="off"></el-input>
 							</el-form-item>
 
-							<el-form-item label="商务代表" label-width="120px">
-								<el-autocomplete v-model="editform.business" maxlength="15"></el-autocomplete>
+							<el-form-item label="商务代表" label-width="120px">								
+								<el-input v-model="editform.business" placeholder="商务代表"></el-input>
 							</el-form-item>
-							<el-form-item label="商务经理" label-width="120px">
-								<el-autocomplete v-model="editform.manager" maxlength="15"></el-autocomplete>
+							<el-form-item label="商务经理" label-width="120px">	
+								<el-input v-model="editform.manager" placeholder="商务经理"></el-input>
 							</el-form-item>
 
 							<el-form-item label="备注" label-width="120px">
@@ -278,7 +289,8 @@
 				message: '',
 				dialogFormVisible: false,
 				PageCount: 0,
-				pagesize: 300
+				pagesize: 300,
+				selectinput:false,
 			}
 		},
 		watch: {
@@ -463,7 +475,12 @@
 				var searchJson = that.search;
 				if(JSON.stringify(searchJson) != "{}") {
 					console.log(searchJson)
-					that.$http.post(that.listapi + '?action=search', searchJson).then(function(res) {
+					that.$http.post(that.listapi + '?action=search', searchJson,{
+					headers:{
+					'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+					},
+					emulateJSON :true
+				}).then(function(res) {
 						if(res.data.code == 0) {
 							that.list = res.data.data;
 							that.loading = false;
@@ -507,7 +524,12 @@
 					cancelButtonText: '取消',
 					type: 'warning'
 				}).then(() => {
-					that.$http.post(that.editapi + '?action=add', addJson).then(function(res) {
+					that.$http.post(that.editapi + '?action=add', addJson,{
+					headers:{
+					'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+					},
+					emulateJSON :true
+				}).then(function(res) {
 							that.list = res.data.data;
 							that.$message({
 								type: 'success',
@@ -543,7 +565,12 @@
 					cancelButtonText: '取消',
 					type: 'warning'
 				}).then(() => {
-					that.$http.post(that.editapi + '?action=update', editJosn).then(function(res) {
+					that.$http.post(that.editapi + '?action=update', editJosn,{
+					headers:{
+					'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+					},
+					emulateJSON :true
+				}).then(function(res) {
 						that.list = res.data.data;
 						that.dialogFormVisible = false;
 						that.$message({
@@ -573,7 +600,12 @@
 					cancelButtonText: '取消',
 					type: 'warning'
 				}).then(() => {
-					that.$http.post(that.editapi + '?action=del', deleteJosn).then(function(res) {
+					that.$http.post(that.editapi + '?action=del', deleteJosn,{
+					headers:{
+					'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+					},
+					emulateJSON :true
+				}).then(function(res) {
 						that.list = res.data.data;
 						that.$message({
 							type: 'success',
@@ -620,11 +652,22 @@
 				this.$router.push({
 					path: '/setting'
 				})
-			}
+			},
+			
+			selectinputfn(a) {
+				if(a == '自定义') {
+					this.selectinput = true;
+				}
+			},
 		},
 		mounted: function() {
 			var that = this;
-			that.$http.post(that.listapi + '?action=home').then(function(res) {
+			that.$http.post(that.listapi + '?action=home',{},{
+					headers:{
+					'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+					},
+					emulateJSON :true
+				}).then(function(res) {
 				if(res.data.code == 0) {
 					that.login = 1;
 					that.list = res.data.data;

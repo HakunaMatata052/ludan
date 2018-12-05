@@ -37,7 +37,12 @@
 		methods: {
 			submit: function() {
 				var that = this;
-				that.$http.post(that.loginapi+'?action=login', that.login).then(function(res) {
+				that.$http.post(that.loginapi+'?action=login', that.login,{
+					headers:{
+					'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+					},
+					emulateJSON :true
+				}).then(function(res) {
 					if(res.data.code == 0) {
 						that.$message({
 						type: 'success',
