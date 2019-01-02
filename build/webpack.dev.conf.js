@@ -65,7 +65,8 @@ const devWebpackConfig = merge(baseWebpackConfig, {
 					'msg': '加载成功！',
 					"date": '2018-5',
 					"statistics": statistics,
-					data: seller
+					data: seller,
+					"designer":"宇文锦|2014990040,周鹏飞|3211793508,钟杰敏|81928408,高欢|2160647376,吴彦蓉|2016984935"
 				}) //接口返回json数据，上面配置的数据seller就赋值给data请求后调用
 			}),
 			app.post('/apis/DoitHandler', function(req, res) { // 注意这里改为post就可以了
@@ -75,7 +76,8 @@ const devWebpackConfig = merge(baseWebpackConfig, {
 					'msg': '加载成功！',
 					"date": '2018-5',
 					"statistics": statistics,
-					data: seller
+					data: seller,
+					  "designer": "宇文锦|2014990040,周鹏飞|3211793508,钟杰敏|81928408,高欢|2160647376,吴彦蓉|2016984935"
 				}) //接口返回json数据，上面配置的数据seller就赋值给data请求后调用
 			}),
 			app.get('/apis/EditHandler', (req, res) => {
@@ -85,7 +87,8 @@ const devWebpackConfig = merge(baseWebpackConfig, {
 					'msg': '加载成功！',
 					"date": '2018-5',
 					"statistics": statistics,
-					data: seller
+					data: seller,
+					  "designer": "宇文锦|2014990040,周鹏飞|3211793508,钟杰敏|81928408,高欢|2160647376,吴彦蓉|2016984935"
 				}) //接口返回json数据，上面配置的数据seller就赋值给data请求后调用
 			}),
 			app.post('/apis/EditHandler', function(req, res) { // 注意这里改为post就可以了
@@ -95,7 +98,8 @@ const devWebpackConfig = merge(baseWebpackConfig, {
 					'msg': '加载成功！',
 					"date": '2018-5',
 					"statistics": statistics,
-					data: seller
+					data: seller,
+					  "designer": "宇文锦|2014990040,周鹏飞|3211793508,钟杰敏|81928408,高欢|2160647376,吴彦蓉|2016984935"
 				}) //接口返回json数据，上面配置的数据seller就赋值给data请求后调用
 			}),
 			app.get('/apis/LoginHandler', (req, res) => {
@@ -105,7 +109,8 @@ const devWebpackConfig = merge(baseWebpackConfig, {
 					'msg': '加载成功！',
 					"date": '2018-5',
 					"statistics": statistics,
-					data: seller
+					data: seller,
+					  "designer": "宇文锦|2014990040,周鹏飞|3211793508,钟杰敏|81928408,高欢|2160647376,吴彦蓉|2016984935"
 				}) //接口返回json数据，上面配置的数据seller就赋值给data请求后调用
 			}),
 			app.post('/apis/LoginHandler', function(req, res) { // 注意这里改为post就可以了
@@ -115,7 +120,8 @@ const devWebpackConfig = merge(baseWebpackConfig, {
 					'msg': '加载成功！',
 					"date": '2018-5',
 					"statistics": statistics,
-					data: seller
+					data: seller,
+					  "designer": "宇文锦|2014990040,周鹏飞|3211793508,钟杰敏|81928408,高欢|2160647376,吴彦蓉|2016984935"
 				}) //接口返回json数据，上面配置的数据seller就赋值给data请求后调用
 			})
 		}

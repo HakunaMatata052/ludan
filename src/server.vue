@@ -4,9 +4,9 @@
 			<el-container style="overflow: auto;">
 				<el-header>
 					<div style="float: right;font-size: 20px;">
+						<i class="el-icon-tickets" @click="home"></i>
 						<i class="el-icon-upload" @click="server"></i></a>
-						<a href="/"><i class="el-icon-tickets"></i></a>
-						<i class="el-icon-refresh" @click="showData()"></i>
+						<i class="el-icon-refresh" @click="showData"></i>
 						<el-dropdown>
 							<i class="el-icon-setting" style="margin-right: 15px;font-size: 20px;"></i>
 							<el-dropdown-menu slot="dropdown">
@@ -267,9 +267,9 @@
 		name: 'app',
 		data: function() {
 			return {
-				listapi: 'apis/Services/',
-				editapi: 'apis/EditServices/',
-				loginapi: 'apis/LoginHandler/',
+				listapi: process.env.API_ROOT+'apis/Services/',
+				editapi: process.env.API_ROOT+'apis/EditServices/',
+				loginapi: process.env.API_ROOT+'apis/LoginHandler/',
 				username: "",
 				list: [],
 				editform: {},
@@ -642,6 +642,11 @@
 						})
 					}
 				}, function(res) {});
+			},
+			home(){
+				this.$router.push({
+					path: '/'
+				})
 			},
 			server() {
 				this.$router.push({

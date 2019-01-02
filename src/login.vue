@@ -31,7 +31,7 @@
 		data() {
 			return {
 				login: {},
-				loginapi: 'apis/LoginHandler/',
+				loginapi: process.env.API_ROOT+'apis/LoginHandler/',
 			}
 		},
 		methods: {

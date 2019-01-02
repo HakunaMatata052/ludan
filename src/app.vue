@@ -1,8 +1,8 @@
 <template>
-	<div id="app" v-show="login">
+	<div id="app" v-show="login" v-loading="bodyloading">
 		<el-container style="height: 100%;">
-			<el-aside width="200px" style="background-color: rgb(238, 241, 246)" v-show="togglebody" id="side">
-				<el-menu :default-openeds="['1','3']">
+			<el-aside width="200px" v-show="togglebody" id="side">
+				<el-menu :default-openeds="['1','3']" style="padding-top:30px;">
 					<el-submenu index="1">
 						<template slot="title"><i class="el-icon-message"></i>各类型单量统计</template>
 						<el-menu-item-group>
@@ -37,11 +37,11 @@
 				</el-menu>
 			</el-aside>
 			<el-container style="overflow: auto;">
-				<el-header>
-					<div style="float: right;font-size: 20px;">
-						<i class="el-icon-upload" @click="server"></i></a>
-						<a href="/"><i class="el-icon-tickets"></i></a>
-						<i class="el-icon-refresh" @click="showData()"></i>
+				<el-header height="auto" style="margin-top:10px">
+					<div style="float:right;font-size: 20px;">
+						<i class="el-icon-tickets" @click="home"></i>
+						<i class="el-icon-upload" @click="server"></i>
+						<i class="el-icon-refresh" @click="showData"></i>
 						<el-dropdown>
 							<i class="el-icon-setting" style="margin-right: 15px;font-size: 20px;"></i>
 							<el-dropdown-menu slot="dropdown">
@@ -53,6 +53,7 @@
 					</div>
 					<el-button @click="togglebody = !togglebody"><i class="el-icon-menu"></i></el-button>
 					<el-select placeholder="请选择" v-model="cxDate.year">
+						<el-option value="2019">2019年</el-option>
 						<el-option value="2018">2018年</el-option>
 						<el-option value="2017">2017年</el-option>
 						<el-option value="2016">2016年</el-option>
@@ -122,13 +123,19 @@
 						</el-col>
 					</el-row>
 					<el-row :gutter="20">
-						<el-col :span="3">
+						<el-col :span="22">
 							<el-button type="primary" icon="el-icon-view" size="mini" @click='toggle' circle></el-button>
 							<el-button type="primary" icon="el-icon-edit" size="mini" @click="opcl_edit" circle></el-button>
 							<el-button type="primary" icon="el-icon-tickets" size="mini" @click="dls_edit" circle></el-button>
+							<el-button type="primary" size="mini" @click="tjkf('483303587')">成都客服</el-button>
+							<el-button type="primary" size="mini" @click="tjkf('3188386448')">郑州客服</el-button>
+							<el-button type="primary" size="mini" @click="tjkf('2439418622')">武汉客服</el-button>	
+
 							<el-button type="primary" icon="el-icon-refresh" size="mini" @click="refresh" circle v-show="username=='罗彬'"></el-button>
 						</el-col>
-						<el-col :span="2" :offset="19" style="text-align: right;">
+						<el-col :span="2" style="text-align: right;">
+							
+							<el-button type="danger" icon="el-icon-delete" size="mini" @click="dels=!dels" circle></el-button>
 							<el-button type="primary" icon="el-icon-tickets" size="mini" @click="exportExcel" circle></el-button>
 						</el-col>
 					</el-row>
@@ -158,12 +165,12 @@
 								<el-input v-model="add[0].domains" placeholder="域名"></el-input>
 							</template>
 						</el-table-column>
-						<el-table-column sortable prop="qdate" label="签单日期" min-width="60">
+						<el-table-column sortable prop="qdate" label="签单日期" min-width="70">
 							<template slot-scope="scope">
 								<el-input v-model="add[0].qdate" @blur="automatic('qdate')" placeholder="签单时间"></el-input>
 							</template>
 						</el-table-column>
-						<el-table-column sortable prop="xdate" label="下单日期" min-width="60">
+						<el-table-column sortable prop="xdate" label="下单日期" min-width="70">
 							<template slot-scope="scope">
 								<el-input v-model="add[0].xdate" @blur="automatic('xdate')" placeholder="下单时间"></el-input>
 							</template>
@@ -196,7 +203,7 @@
 								<el-input v-model="add[0].remarks" placeholder="备注"></el-input>
 							</template>
 						</el-table-column>
-						<el-table-column sortable prop="designer" label="设计师" min-width="75">
+						<el-table-column sortable prop="designer" label="设计师" min-width="60">
 							<template slot-scope="scope">
 								<el-select v-model="add[0].designer" placeholder="设计狮" @change="selectinputfn" v-if="selectinput == false">
 									<el-option v-for="item in designer" :key="item.value" :label="item.value" :value="item.value">
@@ -205,10 +212,23 @@
 								</el-select>
 
 								<el-input v-model="add[0].designer" value="" placeholder="设计狮" v-if="selectinput == true" @blur="selectinput=false"></el-input>
+							</template>
+						</el-table-column>
+						
+						<el-table-column sortable prop="fee" label="切图" min-width="60">
+							<template slot-scope="scope">
+								<el-select v-model="add[0].fee" placeholder="切图" @change="selectinputfn" v-if="selectinput == false">
+									<el-option v-for="item in fee" :key="item.value" :label="item.value" :value="item.value">
+									</el-option>
+									<el-option label="其他" value="其他"></el-option>
+								</el-select>
+
+								<el-input v-model="add[0].fee" value="" placeholder="设计狮" v-if="selectinput == true" @blur="selectinput=false"></el-input>
 
 							</template>
 						</el-table-column>
-						<el-table-column sortable prop="programmer" label="程序" min-width="75">
+
+						<el-table-column sortable prop="programmer" label="程序" min-width="60">
 							<template slot-scope="scope">
 								<el-select v-model="add[0].programmer" placeholder="程序猿">
 									<el-option v-for="item in programmer" :key="item.id" :label="item.label" :value="item.value">
@@ -236,7 +256,7 @@
 								<el-input v-model="add[0].online" placeholder="上线日期"></el-input>
 							</template>
 						</el-table-column>
-						<el-table-column sortable label="操作" width="140" fixed="right">
+						<el-table-column sortable label="操作" width="90" fixed="right">
 							<template slot-scope="scope">
 								<el-button size="mini" type="success" @click="addFn" style="width: 100%;">添加</el-button>
 							</template>
@@ -253,9 +273,9 @@
 						</el-table-column>
 						<el-table-column sortable prop="domains" label="域名" min-width="120" show-overflow-tooltip>
 						</el-table-column>
-						<el-table-column sortable prop="qdate" label="签单日期" min-width="60" show-overflow-tooltip>
+						<el-table-column sortable prop="qdate" label="签单日期" min-width="70" show-overflow-tooltip>
 						</el-table-column>
-						<el-table-column sortable prop="xdate" label="下单日期" min-width="60" show-overflow-tooltip>
+						<el-table-column sortable prop="xdate" label="下单日期" min-width="70" show-overflow-tooltip>
 						</el-table-column>
 						<el-table-column sortable prop="type" label="类别" min-width="80" show-overflow-tooltip>
 						</el-table-column>
@@ -275,12 +295,14 @@
 								</template>
 							</template>
 						</el-table-column>
-						<el-table-column sortable prop="designer" label="设计师" min-width="75" show-overflow-tooltip>
+						<el-table-column sortable prop="designer" label="设计师" min-width="60" show-overflow-tooltip>
 							<template slot-scope="scope">
 								<div @dblclick="noticefn(scope.row.designer,scope.row)" class="btn" data-clipboard-target="#noticeCon">{{scope.row.designer}}</div>
 							</template>
 						</el-table-column>
-						<el-table-column sortable prop="programmer" label="程序" min-width="75" show-overflow-tooltip>
+						<el-table-column sortable prop="fee" label="切图" min-width="60" show-overflow-tooltip>
+						</el-table-column>
+						<el-table-column sortable prop="programmer" label="程序" min-width="60" show-overflow-tooltip>
 							<template slot-scope="scope">
 								<div @dblclick="noticefn(scope.row.programmer,scope.row)" class="btn" data-clipboard-target="#noticeCon">{{scope.row.programmer}}</div>
 							</template>
@@ -293,10 +315,12 @@
 						</el-table-column>
 						<el-table-column sortable prop="online" label="上线日期" min-width="70" show-overflow-tooltip>
 						</el-table-column>
-						<el-table-column sortable label="操作" width="140" fixed="right" v-if="stat_edit=='open'">
+						<el-table-column sortable label="操作" width="90" fixed="right" v-if="stat_edit=='open'">
 							<template slot-scope="scope">
-								<el-button size="mini" type="primary" @click="editFn(scope.row)">编辑</el-button>
-								<el-button size="mini" type="danger" @click="deleteFn(scope.row)">删除</el-button>
+								<div style="display:flex;">
+								<el-button size="mini" type="primary" @click="editFn(scope.row)">改</el-button>
+								<el-button size="mini" type="danger" @click="deleteFn(scope.row)" v-if="dels">删</el-button>
+								</div>
 							</template>
 						</el-table-column>
 					</el-table>
@@ -346,6 +370,15 @@
 							<el-form-item label="设计师" label-width="120px">
 								<el-select v-model="editform.designer" placeholder="设计狮" @change="selectinputfn" v-if="selectinput == false">
 									<el-option v-for="item in designer" :key="item.value" :label="item.value" :value="item.value">
+									</el-option>
+									<el-option label="其他" value="其他"></el-option>
+								</el-select>
+								<el-input v-model="editform.designer" value="" placeholder="设计狮" v-if="selectinput == true" @blur="selectinput=false"></el-input>
+							</el-form-item>
+							
+							<el-form-item label="切图" label-width="120px">
+								<el-select v-model="editform.fee" placeholder="切图" @change="selectinputfn" v-if="selectinput == false">
+									<el-option v-for="item in fee" :key="item.value" :label="item.value" :value="item.value">
 									</el-option>
 									<el-option label="其他" value="其他"></el-option>
 								</el-select>
@@ -401,9 +434,9 @@
 		name: 'app',
 		data: function() {
 			return {
-				listapi: 'apis/DoitHandler/',
-				editapi: 'apis/EditHandler/',
-				loginapi: 'apis/LoginHandler/',
+				listapi: process.env.API_ROOT+'apis/DoitHandler/',
+				editapi: process.env.API_ROOT+'apis/EditHandler/',
+				loginapi: process.env.API_ROOT+'apis/LoginHandler/',
 				username: "",
 				list: [],
 				viewlist: [],
@@ -428,129 +461,8 @@
 				}],
 				companyList: [],
 				typeList: ["WJDH双模", "WJDH电商", "常规", "营销宝"],
+				fee:[],
 				designer: [],
-				design1: [{
-					"text": "闫真",
-					"value": "闫真",
-					"qq": "2039832778"
-				}, {
-					"text": "王巧",
-					"value": "王巧",
-					"qq": "1301145916"
-				}, {
-					"text": "崔美霞",
-					"value": "崔美霞",
-					"qq": "2834151356"
-				}, {
-					"text": "石婧",
-					"value": "石婧",
-					"qq": "2401164442"
-				}, {
-					"text": "李强",
-					"value": "李强",
-					"qq": "3275290873"
-				}, {
-					"text": "金文文",
-					"value": "金文文",
-					"qq": "3280037248"
-				}],
-				design2: [{
-					"text": "罗彬",
-					"value": "罗彬",
-					"qq": ""
-				}, {
-					"text": "周鹏飞",
-					"value": "周鹏飞",
-					"qq": "3211793508"
-				}, {
-					"text": "冯燕",
-					"value": "冯燕",
-					"qq": "447269611"
-				}, {
-					"text": "唐红红",
-					"value": "唐红红",
-					"qq": "3274240258"
-				}, {
-					"text": "陈鑫",
-					"value": "陈鑫",
-					"qq": "3150180370"
-				}, {
-					"text": "宇文锦",
-					"value": "宇文锦",
-					"qq": "2014990040"
-				}],
-				design3: [{
-					"text": "吴彦蓉",
-					"value": "吴彦蓉",
-					"qq": "2016984935"
-				}, {
-					"text": "马利丽",
-					"value": "马利丽",
-					"qq": "3078136298"
-				}, {
-					"text": "钟杰敏",
-					"value": "钟杰敏",
-					"qq": "2744211684"
-				}, {
-					"text": "王卓",
-					"value": "王卓",
-					"qq": "3275416239"
-				}, {
-					"text": "高欢",
-					"value": "高欢",
-					"qq": "2160647376"
-				}, {
-					"text": "郭玉兰",
-					"value": "郭玉兰",
-					"qq": "2805830094"
-				}],
-				design4: [{
-					"text": "高翔",
-					"value": "高翔",
-					"qq": "2962813967"
-				}, {
-					"text": "钱珍",
-					"value": "钱珍",
-					"qq": "3223933260"
-				}],
-				fgsdesign: [{
-						"text": "T",
-						"value": "任林",
-						"qq": "483303587"
-					}, {
-						"text": "U",
-						"value": "谢小良",
-						"qq": "483303587"
-					}, {
-						"text": "V",
-						"value": "杨玲",
-						"qq": "483303587"
-					}, {
-						"text": "W",
-						"value": "吴帅",
-						"qq": "3188386448"
-					}, {
-						"text": "X",
-						"value": "杜友为",
-						"qq": "3188386448"
-					}, {
-						"text": "Y",
-						"value": "向松",
-						"qq": "2439418622"
-					},
-					{
-						"value": "朱凯",
-						"qq": ""
-					},
-					{
-						"value": "康卫峰",
-						"qq": ""
-					},
-					{
-						"value": "邢亮",
-						"qq": ""
-					}
-				],
 				programmer: [{
 						"text": "张田",
 						"value": "张田",
@@ -587,8 +499,10 @@
 				message: '',
 				dialogFormVisible: false,
 				PageCount: 0,
-				pagesize: 300,
-				noticeCon: ''
+				pagesize: 100,
+				noticeCon: '',
+				dels:false,
+				bodyloading:true
 			}
 		},
 		watch: {
@@ -1208,10 +1122,12 @@
 			noticefn(name, content) {
 				var that = this;
 				var tempcon = [];
-				for(var attr in content) {
-					//tempcon+=attr+':'+content[attr]+'\r\n'
-					tempcon.push(content[attr])
-				}
+				tempcon.push(`单子名称：${content.customer}`);				
+				tempcon.push(`商务经理：${content.manager}`);				
+				tempcon.push(`域名：${content.domains}`);
+				tempcon.push(`类型：${content.type}`);
+				tempcon.push(`设计狮：${content.designer}`);				
+				tempcon.push(`切图：${content.fee}`);
 				tempcon = tempcon.join("&");
 				tempcon = tempcon.replace(/&+/gi, '\r\n')
 				that.noticeCon = tempcon;
@@ -1227,7 +1143,6 @@
 							setTimeout(function() {
 								c.parentNode.removeChild(c);
 							}, 1000)
-
 						}
 					}
 
@@ -1241,6 +1156,11 @@
 				if(a == '其他') {
 					this.selectinput = true;
 				}
+			},
+			home() {
+				this.$router.push({
+					path: '/'
+				})
 			},
 			server() {
 				this.$router.push({
@@ -1264,6 +1184,17 @@
 				}, function(res) {
 
 				});
+			},
+			tjkf(val){
+				var qqSrc = "tencent://message/?uin=" +val + "&Site=" + val + "&Menu=yes";
+					//window.open(qqSrc); 
+					var c = document.createElement('iframe');
+					c.src = qqSrc;
+					c.style.setProperty('display', 'none', 'important');
+					document.getElementById("app").appendChild(c);
+					setTimeout(function() {
+						c.parentNode.removeChild(c);
+					}, 1000)
 			}
 		},
 		mounted: function() {
@@ -1297,17 +1228,20 @@
 						that.cxDate.year = dateRiqi[0];
 						that.cxDate.month = dateRiqi[1];
 					};
-					if(that.username == '闫真') {
-						that.designer = that.design1
-					} else if(that.username == '罗彬') {
-						that.designer = that.design2
-					} else if(that.username == '吴彦蓉') {
-						that.designer = that.design3
-					} else if(that.username == '高翔') {
-						that.designer = that.design4
-					} else {
-						that.designer = that.designer.concat(that.design1, that.design2, that.design3, that.design4, that.fgsdesign)
+					var designer = res.data.designer.split(',')
+					for(var i=0;i<designer.length;i++){
+						var temp = {}
+						temp.value = designer[i].split('|')[0];						
+						temp.qq =  designer[i].split('|')[1];						
+						that.designer.push(temp);
 					};
+					var fee = res.data.fee.split(',')
+					for(var i=0;i<fee.length;i++){
+						var temp = {}
+						temp.value = fee[i].split('|')[0];						
+						temp.qq =  fee[i].split('|')[1];						
+						that.fee.push(temp);
+					}
 					that.tongji();
 				} else {
 					this.$router.push({
@@ -1318,14 +1252,24 @@
 
 			});
 
+
 		},
-		created() {}
+		created() {
+			if(window.location.hostname == "192.168.0.202"){
+				var style = document.getElementById("style")
+				style.parentNode.removeChild(style);
+				document.body.style.display = "block"
+			}else{
+				document.body.style.display = "block"
+			}
+		}
 	}
 </script>
 <style>
 	.indexbody {
 		margin: 0;
 		overflow: hidden;
+		font-family: 'Monda', "PingFang SC", "Microsoft YaHei", sans-serif
 	}
 	
 	.el-scrollbar {
@@ -1423,5 +1367,12 @@
 	.huyan tbody .hover-row,
 	.huyan tbody .hover-row td {
 		background-color: #dcf0ce!important;
+	}
+	.el-button+.el-button {
+		margin-left: 0
+	}
+	.el-button--mini, .el-button--mini.is-round {
+		    padding: 7px 10px;
+			    flex-grow: 1;
 	}
 </style>
