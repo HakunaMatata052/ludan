@@ -223,7 +223,7 @@
 									<el-option label="其他" value="其他"></el-option>
 								</el-select>
 
-								<el-input v-model="add[0].fee" value="" placeholder="设计狮" v-if="selectinput == true" @blur="selectinput=false"></el-input>
+								<el-input v-model="add[0].fee" value="" placeholder="切图" v-if="selectinput == true" @blur="selectinput=false"></el-input>
 
 							</template>
 						</el-table-column>
@@ -382,7 +382,7 @@
 									</el-option>
 									<el-option label="其他" value="其他"></el-option>
 								</el-select>
-								<el-input v-model="editform.designer" value="" placeholder="设计狮" v-if="selectinput == true" @blur="selectinput=false"></el-input>
+								<el-input v-model="editform.fee" value="" placeholder="切图" v-if="selectinput == true" @blur="selectinput=false"></el-input>
 							</el-form-item>
 							<el-form-item label="程序" label-width="120px">
 								<el-select v-model="editform.programmer" placeholder="程序猿">
