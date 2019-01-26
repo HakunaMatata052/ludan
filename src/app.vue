@@ -129,9 +129,7 @@
 							<el-button type="primary" icon="el-icon-tickets" size="mini" @click="dls_edit" circle></el-button>
 							<el-button type="primary" size="mini" @click="tjkf('483303587')">成都客服</el-button>
 							<el-button type="primary" size="mini" @click="tjkf('3188386448')">郑州客服</el-button>
-							<el-button type="primary" size="mini" @click="tjkf('2439418622')">武汉客服</el-button>	
-
-							<el-button type="primary" icon="el-icon-refresh" size="mini" @click="refresh" circle v-show="username=='罗彬'"></el-button>
+							<el-button type="primary" size="mini" @click="tjkf('2439418622')">武汉客服</el-button>
 						</el-col>
 						<el-col :span="2" style="text-align: right;">
 							
@@ -324,7 +322,7 @@
 							</template>
 						</el-table-column>
 					</el-table>
-					<el-pagination :page-size="pagesize" layout="total,prev, pager, next, jumper" :total="PageCount" @current-change="changepage">
+					<el-pagination :page-size="pagesize" :page-sizes="[100, 200, 300, 400]" layout="total ,sizes,prev, pager, next, jumper" :total="PageCount" @current-change="changepage" @size-change="changePageSize">
 					</el-pagination>
 					<textarea :value="noticeCon" style="opacity: 0;" id="noticeCon"></textarea>
 					<el-dialog title="编辑" :visible.sync="dialogFormVisible">
@@ -417,6 +415,7 @@
 							<el-button @click="dialogFormVisible = false">取 消</el-button>
 							<el-button type="primary" @click="submitedit(0)">确 定</el-button>
 							<el-button type="primary" @click="submitedit">修改不刷新</el-button>
+							<el-button type="success" @click="submitedit(1)" v-if="username=='btoe'">录入切图</el-button>
 						</div>
 					</el-dialog>
 				</el-main>
@@ -502,20 +501,21 @@
 				pagesize: 100,
 				noticeCon: '',
 				dels:false,
-				bodyloading:true
+				bodyloading:true,
+				addHomeTime:false
 			}
 		},
 		watch: {
 			list: function(val) {
 				this.$nextTick(function() {
 					//alert(2)
-					//console.log('a的数据发生变化' + this.list);
+					// console.log('a的数据发生变化' + this.list);
 				})
 			}
 		},
 		methods: {
 			uploadsSuccess(data) {
-				console.log(data)
+				// console.log(data)
 				this.editform.imgurl = data.data;
 			},
 			uploadsError() {
@@ -797,7 +797,7 @@
 				that.loading = true;
 				var searchJson = that.search;
 				if(JSON.stringify(searchJson) != "{}") {
-					console.log(searchJson)
+					// console.log(searchJson)
 					that.$http.post(that.listapi + '?action=search', searchJson,{
 					headers:{
 					'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
@@ -894,12 +894,18 @@
 
 			},
 			editFn: function(row) {
-				var that = this;
+				var that = this;				
+				that.addHomeTime = false;
 				that.dialogFormVisible = true;
 				that.editform = row;
+				if(that.editform.fee.length == 0 && that.editform.home.length == 0) that.addHomeTime = true; 
 			},
 			submitedit: function(state) {
 				var that = this;
+				if(state===1){
+					if(that.addHomeTime && that.editform.fee.length != 0) that.today('home',that.editform);
+				}
+				
 				var editJosn = that.editform;
 				editJosn.username = that.username;
 				that.$confirm('确认修改？？', '提示', {
@@ -907,6 +913,9 @@
 					cancelButtonText: '取消',
 					type: 'warning'
 				}).then(() => {
+					if(that.addHomeTime && that.editform.fee.length != 0) {
+						that.noticefn(editJosn.designer,that.editform); 
+					}
 					that.$http.post(that.editapi + '?action=update', editJosn,{
 					headers:{
 					'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
@@ -914,7 +923,7 @@
 					emulateJSON :true
 				}).then(function(res) {
 						if(res.data.code == "0") {
-							if(state == 0) {
+							if(state === 0 || state===1 ) {
 								that.list = res.data.data;
 								that.viewlist = res.data.data;
 							}
@@ -937,12 +946,22 @@
 							message: '修改失败!'
 						});
 					});
-
+					if(state===1 ) {
+						var feeJson = {};
+						feeJson.data = [];
+						feeJson.data[0] = that.editform;
+						feeJson.data[0].feetime = new Date().getFullYear()+'-'+(new Date().getMonth()+1)+'-'+new Date().getDate();
+						that.$http.post('http://192.168.0.253:7000/', feeJson).then((res)=>{
+							that.$notify({
+								title: '已录入切图'
+							});
+						})
+					}
 				}).catch(() => {
 					that.$message({
 						type: 'info',
 						message: '已取消修改！！'
-					});
+					});					
 				});
 			},
 			deleteFn: function(row) {
@@ -1027,6 +1046,11 @@
 				that.companyList = that.arrCheck(fgslist);
 				that.swdb = that.arrCheck(swdbname);
 				that.swjl = that.arrCheck(swjlname);
+			},
+			changePageSize(val){
+				var that = this;
+				that.pagesize = val;
+				that.viewlist = that.changearray(1)
 			},
 			changepage: function(val) {
 				var that = this;
@@ -1148,7 +1172,7 @@
 
 				}, function(e) {
 					alert('Can not copy')
-					console.log(e)
+					// console.log(e)
 				})
 
 			},
@@ -1171,19 +1195,6 @@
 				this.$router.push({
 					path: '/setting'
 				})
-			},
-			refresh() {
-				var that = this;
-				console.log(that.list)
-				var sjson = {};
-				sjson.data = that.list;
-				sjson.date = that.cxDate;
-				console.log(sjson)
-				that.$http.post('http://192.168.0.253/refresh/index.php', sjson).then(function(res) {
-					console.log(res)
-				}, function(res) {
-
-				});
 			},
 			tjkf(val){
 				var qqSrc = "tencent://message/?uin=" +val + "&Site=" + val + "&Menu=yes";

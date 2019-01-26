@@ -22,7 +22,7 @@
 			<div class="copy-right">
 				版权所有 动力无限后台管理系统 Copyright &copy; 2005 - 2018 btoe.cn Inc. All Rights Reserved.
 			</div>
-			<iframe src="/login.aspx" style="display: none;"></iframe>
+			<iframe src="http://192.168.0.202:8088/login.aspx" style="display: none;"></iframe>
 		</div>
 	</div>
 </template>

@@ -61,7 +61,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
 			app.get('/apis/DoitHandler', (req, res) => {
 				res.json({
 					code: 0,
-					'username': '罗彬',
+					'username': 'btoe',
 					'msg': '加载成功！',
 					"date": '2018-5',
 					"statistics": statistics,
@@ -72,7 +72,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
 			app.post('/apis/DoitHandler', function(req, res) { // 注意这里改为post就可以了
 				res.json({
 					code: 0,
-					'username': '罗彬',
+					'username': 'btoe',
 					'msg': '加载成功！',
 					"date": '2018-5',
 					"statistics": statistics,
@@ -83,7 +83,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
 			app.get('/apis/EditHandler', (req, res) => {
 				res.json({
 					code: 0,
-					'username': '罗彬',
+					'username': 'btoe',
 					'msg': '加载成功！',
 					"date": '2018-5',
 					"statistics": statistics,
@@ -94,7 +94,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
 			app.post('/apis/EditHandler', function(req, res) { // 注意这里改为post就可以了
 				res.json({
 					code: 0,
-					'username': '罗彬',
+					'username': 'btoe',
 					'msg': '加载成功！',
 					"date": '2018-5',
 					"statistics": statistics,
@@ -105,7 +105,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
 			app.get('/apis/LoginHandler', (req, res) => {
 				res.json({
 					code: 0,
-					'username': '罗彬',
+					'username': 'btoe',
 					'msg': '加载成功！',
 					"date": '2018-5',
 					"statistics": statistics,
@@ -116,7 +116,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
 			app.post('/apis/LoginHandler', function(req, res) { // 注意这里改为post就可以了
 				res.json({
 					code: 0,
-					'username': '罗彬',
+					'username': 'btoe',
 					'msg': '加载成功！',
 					"date": '2018-5',
 					"statistics": statistics,
