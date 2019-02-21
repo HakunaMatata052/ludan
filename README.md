@@ -14,3 +14,6 @@ http://localhost:8083/
 
 # 打包项目
 npm run build
+
+# 界面截图
+![](https://dobby.me/images/ludan.jpg)

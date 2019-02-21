@@ -81,8 +81,8 @@
 				<el-main :id="'main'">
 					<el-row :gutter="20">
 						<el-col :span="8">
-							<el-input placeholder="请输入内容" v-model="search.company" clearable>
-								<template slot="prepend">分公司：</template>
+							<el-input placeholder="请输入内容" v-model="search.fee" clearable>
+								<template slot="prepend">切图：</template>
 							</el-input>
 						</el-col>
 						<el-col :span="8">
@@ -130,6 +130,7 @@
 							<el-button type="primary" size="mini" @click="tjkf('483303587')">成都客服</el-button>
 							<el-button type="primary" size="mini" @click="tjkf('3188386448')">郑州客服</el-button>
 							<el-button type="primary" size="mini" @click="tjkf('2439418622')">武汉客服</el-button>
+							<el-button type="primary" size="mini" @click="refresh">批量录入切图</el-button>
 						</el-col>
 						<el-col :span="2" style="text-align: right;">
 							
@@ -950,8 +951,7 @@
 						var feeJson = {};
 						feeJson.data = [];
 						feeJson.data[0] = that.editform;
-						feeJson.data[0].feetime = new Date().getFullYear()+'-'+(new Date().getMonth()+1)+'-'+new Date().getDate();
-						that.$http.post('http://192.168.0.253:7000/', feeJson).then((res)=>{
+						that.$http.post('http://192.168.0.253:5000/', feeJson).then((res)=>{
 							that.$notify({
 								title: '已录入切图'
 							});
@@ -963,6 +963,20 @@
 						message: '已取消修改！！'
 					});					
 				});
+			},
+			refresh(){
+				var that = this;
+		       if(localStorage.getItem('ok')=='ok'){
+				var feeJson = {};
+				feeJson.data = that.viewlist;
+				that.$http.post('http://192.168.0.253:5000/', feeJson).then((res)=>{
+					that.$notify({
+						title: '已录入切图'
+					});
+				})
+			  }else{
+				  that.$message.error('没有权限操作')
+			  }
 			},
 			deleteFn: function(row) {
 				var that = this;
