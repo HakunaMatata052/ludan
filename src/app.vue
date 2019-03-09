@@ -101,11 +101,13 @@
 						<el-col :span="8">
 							<el-input placeholder="请输入内容" v-model="search.customer" clearable>
 								<template slot="prepend">客户名称：</template>
+								<el-button slot="append" icon="el-icon-search" @click="batch('customer')"></el-button>
 							</el-input>
 						</el-col>
 						<el-col :span="8">
 							<el-input placeholder="请输入内容" v-model="search.domains" clearable>
 								<template slot="prepend">域名：</template>
+								<el-button slot="append" icon="el-icon-search" @click="batch('domains')"></el-button>
 							</el-input>
 						</el-col>
 						<el-col :span="8">
@@ -503,7 +505,9 @@
 				noticeCon: '',
 				dels:false,
 				bodyloading:true,
-				addHomeTime:false
+				addHomeTime:false,
+				tempArray:[],
+				count:0
 			}
 		},
 		watch: {
@@ -833,6 +837,38 @@
 				}
 
 			},
+			batch(type){
+				var that = this;
+				that.loading = true;
+				that.tempArray = that.search[type].split(',')
+				that.list = [];
+				that.batchDomains(that.tempArray[that.count],type)
+			},
+			batchDomains(data,type){
+				var that = this
+				var batchJson = {}
+				batchJson[type] = data
+				that.$http.post(that.listapi + '?action=search',batchJson,{
+					headers:{
+					'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
+					},
+					emulateJSON :true
+				}).then(function(res){
+					that.loading = false
+					if(res.data instanceof Array){
+						for(var i = 0;i<res.data.length;i++){
+							that.list.push(res.data)
+						}
+					}
+					if(that.count>=that.tempArray.length){
+						return
+					}else{
+						that.batchDomains(that.tempArray[that.count++],type)
+					}
+					
+				})
+			},
+
 			reSet: function() {
 				var that = this;
 				that.search = {};
