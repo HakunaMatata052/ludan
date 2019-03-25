@@ -840,8 +840,9 @@
 			batch(type){
 				var that = this;
 				that.loading = true;
-				that.tempArray = that.search[type].split(',')
+				that.tempArray = that.search[type].replace(/ /g,'').split(',')
 				that.list = [];
+				that.viewlist = []
 				that.batchDomains(that.tempArray[that.count],type)
 			},
 			batchDomains(data,type){
@@ -854,13 +855,15 @@
 					},
 					emulateJSON :true
 				}).then(function(res){
-					that.loading = false
-					if(res.data instanceof Array){
-						for(var i = 0;i<res.data.length;i++){
-							that.list.push(res.data)
+					if(res.data.data instanceof Array){
+						for(var i = 0;i<res.data.data.length;i++){
+							that.list.push(res.data.data[i])
+							that.viewlist.push(res.data.data[i])
 						}
 					}
 					if(that.count>=that.tempArray.length){
+						that.loading = false;
+						that.count = 0
 						return
 					}else{
 						that.batchDomains(that.tempArray[that.count++],type)
