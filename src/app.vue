@@ -397,7 +397,7 @@
 								<el-input v-model="editform.home" :maxlength="20" auto-complete="off" @focus="today('home',editform)"></el-input>
 							</el-form-item>
 							<el-form-item label="程序认可" label-width="120px">
-								<el-input v-model="editform.program" :maxlength="20" auto-complete="off"></el-input>
+								<el-input v-model="editform.program" :maxlength="20" auto-complete="off" @focus="today('program',editform)" ></el-input>
 							</el-form-item>
 							<el-form-item label="上线日期" label-width="120px">
 								<el-input v-model="editform.online" :maxlength="20" auto-complete="off" @focus="today('online',editform)"></el-input>
